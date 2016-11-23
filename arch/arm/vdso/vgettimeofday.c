@@ -1,18 +1,25 @@
 /*
- * Copyright 2015 Mentor Graphics Corporation.
+ * Userspace implementations of gettimeofday() and friends.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2 of the
- * License.
+ * Copyright (C) 2017 Cavium, Inc.
+ * Copyright (C) 2015 Mentor Graphics Corporation
+ * Copyright (C) 2012 ARM Limited
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Will Deacon <will.deacon@arm.com>
+ * Rewriten from arch64 version into C by: Andrew Pinski <apinski@cavium.com>
+ * Reworked and rebased over arm version by: Mark Salyzyn <salyzyn@android.com>
  */
 
 #include <linux/compiler.h>
@@ -23,40 +30,37 @@
 #include <asm/bug.h>
 #include <asm/page.h>
 #include <asm/unistd.h>
-#include <asm/vdso_datapage.h>
 
 #ifndef CONFIG_AEABI
 #error This code depends on AEABI system call conventions
 #endif
 
-extern struct vdso_data *__get_datapage(void);
+#include "datapage.h"
 
-static notrace u32 __vdso_read_begin(const struct vdso_data *vdata)
+static notrace u32 vdso_read_begin(const struct vdso_data *vd)
 {
 	u32 seq;
-repeat:
-	seq = ACCESS_ONCE(vdata->seq_count);
-	if (seq & 1) {
+
+	do {
+		seq = READ_ONCE(vd->tb_seq_count);
+
+		if ((seq & 1) == 0)
+			break;
+
 		cpu_relax();
-		goto repeat;
-	}
+	} while (true);
+
+	smp_rmb(); /* Pairs with second smp_wmb in update_vsyscall */
 	return seq;
 }
 
-static notrace u32 vdso_read_begin(const struct vdso_data *vdata)
+static notrace int vdso_read_retry(const struct vdso_data *vd, u32 start)
 {
 	u32 seq;
 
-	seq = __vdso_read_begin(vdata);
-
-	smp_rmb(); /* Pairs with smp_wmb in vdso_write_end */
-	return seq;
-}
-
-static notrace int vdso_read_retry(const struct vdso_data *vdata, u32 start)
-{
-	smp_rmb(); /* Pairs with smp_wmb in vdso_write_begin */
-	return vdata->seq_count != start;
+	smp_rmb(); /* Pairs with first smp_wmb in update_vsyscall */
+	seq = READ_ONCE(vd->tb_seq_count);
+	return seq != start;
 }
 
 static notrace long clock_gettime_fallback(clockid_t _clkid,
@@ -76,38 +80,38 @@ static notrace long clock_gettime_fallback(clockid_t _clkid,
 	return ret;
 }
 
-static notrace int do_realtime_coarse(struct timespec *ts,
-				      struct vdso_data *vdata)
+static notrace int do_realtime_coarse(const struct vdso_data *vd,
+				      struct timespec *ts)
 {
 	u32 seq;
 
 	do {
-		seq = vdso_read_begin(vdata);
+		seq = vdso_read_begin(vd);
 
-		ts->tv_sec = vdata->xtime_coarse_sec;
-		ts->tv_nsec = vdata->xtime_coarse_nsec;
+		ts->tv_sec = vd->xtime_coarse_sec;
+		ts->tv_nsec = vd->xtime_coarse_nsec;
 
-	} while (vdso_read_retry(vdata, seq));
+	} while (vdso_read_retry(vd, seq));
 
 	return 0;
 }
 
-static notrace int do_monotonic_coarse(struct timespec *ts,
-				       struct vdso_data *vdata)
+static notrace int do_monotonic_coarse(const struct vdso_data *vd,
+				       struct timespec *ts)
 {
 	struct timespec tomono;
 	u32 seq;
 
 	do {
-		seq = vdso_read_begin(vdata);
+		seq = vdso_read_begin(vd);
 
-		ts->tv_sec = vdata->xtime_coarse_sec;
-		ts->tv_nsec = vdata->xtime_coarse_nsec;
+		ts->tv_sec = vd->xtime_coarse_sec;
+		ts->tv_nsec = vd->xtime_coarse_nsec;
 
-		tomono.tv_sec = vdata->wtm_clock_sec;
-		tomono.tv_nsec = vdata->wtm_clock_nsec;
+		tomono.tv_sec = vd->wtm_clock_sec;
+		tomono.tv_nsec = vd->wtm_clock_nsec;
 
-	} while (vdso_read_retry(vdata, seq));
+	} while (vdso_read_retry(vd, seq));
 
 	ts->tv_sec += tomono.tv_sec;
 	timespec_add_ns(ts, tomono.tv_nsec);
@@ -117,7 +121,7 @@ static notrace int do_monotonic_coarse(struct timespec *ts,
 
 #ifdef CONFIG_ARM_ARCH_TIMER
 
-static notrace u64 get_ns(struct vdso_data *vdata)
+static notrace u64 get_ns(const struct vdso_data *vd)
 {
 	u64 cycle_delta;
 	u64 cycle_now;
@@ -125,29 +129,29 @@ static notrace u64 get_ns(struct vdso_data *vdata)
 
 	cycle_now = arch_counter_get_cntvct();
 
-	cycle_delta = (cycle_now - vdata->cs_cycle_last) & vdata->cs_mask;
+	cycle_delta = (cycle_now - vd->cs_cycle_last) & vd->cs_mask;
 
-	nsec = (cycle_delta * vdata->cs_mult) + vdata->xtime_clock_snsec;
-	nsec >>= vdata->cs_shift;
+	nsec = (cycle_delta * vd->cs_mono_mult) + vd->xtime_clock_snsec;
+	nsec >>= vd->cs_shift;
 
 	return nsec;
 }
 
-static notrace int do_realtime(struct timespec *ts, struct vdso_data *vdata)
+static notrace int do_realtime(const struct vdso_data *vd, struct timespec *ts)
 {
 	u64 nsecs;
 	u32 seq;
 
 	do {
-		seq = vdso_read_begin(vdata);
+		seq = vdso_read_begin(vd);
 
-		if (!vdata->tk_is_cntvct)
+		if (vd->use_syscall)
 			return -1;
 
-		ts->tv_sec = vdata->xtime_clock_sec;
-		nsecs = get_ns(vdata);
+		ts->tv_sec = vd->xtime_clock_sec;
+		nsecs = get_ns(vd);
 
-	} while (vdso_read_retry(vdata, seq));
+	} while (vdso_read_retry(vd, seq));
 
 	ts->tv_nsec = 0;
 	timespec_add_ns(ts, nsecs);
@@ -155,25 +159,25 @@ static notrace int do_realtime(struct timespec *ts, struct vdso_data *vdata)
 	return 0;
 }
 
-static notrace int do_monotonic(struct timespec *ts, struct vdso_data *vdata)
+static notrace int do_monotonic(const struct vdso_data *vd, struct timespec *ts)
 {
 	struct timespec tomono;
 	u64 nsecs;
 	u32 seq;
 
 	do {
-		seq = vdso_read_begin(vdata);
+		seq = vdso_read_begin(vd);
 
-		if (!vdata->tk_is_cntvct)
+		if (vd->use_syscall)
 			return -1;
 
-		ts->tv_sec = vdata->xtime_clock_sec;
-		nsecs = get_ns(vdata);
+		ts->tv_sec = vd->xtime_clock_sec;
+		nsecs = get_ns(vd);
 
-		tomono.tv_sec = vdata->wtm_clock_sec;
-		tomono.tv_nsec = vdata->wtm_clock_nsec;
+		tomono.tv_sec = vd->wtm_clock_sec;
+		tomono.tv_nsec = vd->wtm_clock_nsec;
 
-	} while (vdso_read_retry(vdata, seq));
+	} while (vdso_read_retry(vd, seq));
 
 	ts->tv_sec += tomono.tv_sec;
 	ts->tv_nsec = 0;
@@ -184,12 +188,12 @@ static notrace int do_monotonic(struct timespec *ts, struct vdso_data *vdata)
 
 #else /* CONFIG_ARM_ARCH_TIMER */
 
-static notrace int do_realtime(struct timespec *ts, struct vdso_data *vdata)
+static notrace int do_realtime(const struct vdso_data *vd, struct timespec *ts)
 {
 	return -1;
 }
 
-static notrace int do_monotonic(struct timespec *ts, struct vdso_data *vdata)
+static notrace int do_monotonic(const struct vdso_data *vd, struct timespec *ts)
 {
 	return -1;
 }
@@ -198,23 +202,22 @@ static notrace int do_monotonic(struct timespec *ts, struct vdso_data *vdata)
 
 notrace int __vdso_clock_gettime(clockid_t clkid, struct timespec *ts)
 {
-	struct vdso_data *vdata;
 	int ret = -1;
 
-	vdata = __get_datapage();
+	const struct vdso_data *vd = __get_datapage();
 
 	switch (clkid) {
 	case CLOCK_REALTIME_COARSE:
-		ret = do_realtime_coarse(ts, vdata);
+		ret = do_realtime_coarse(vd, ts);
 		break;
 	case CLOCK_MONOTONIC_COARSE:
-		ret = do_monotonic_coarse(ts, vdata);
+		ret = do_monotonic_coarse(vd, ts);
 		break;
 	case CLOCK_REALTIME:
-		ret = do_realtime(ts, vdata);
+		ret = do_realtime(vd, ts);
 		break;
 	case CLOCK_MONOTONIC:
-		ret = do_monotonic(ts, vdata);
+		ret = do_monotonic(vd, ts);
 		break;
 	default:
 		break;
@@ -246,12 +249,11 @@ static notrace long gettimeofday_fallback(struct timeval *_tv,
 notrace int __vdso_gettimeofday(struct timeval *tv, struct timezone *tz)
 {
 	struct timespec ts;
-	struct vdso_data *vdata;
 	int ret;
 
-	vdata = __get_datapage();
+	const struct vdso_data *vd = __get_datapage();
 
-	ret = do_realtime(&ts, vdata);
+	ret = do_realtime(vd, &ts);
 	if (ret)
 		return gettimeofday_fallback(tv, tz);
 
@@ -260,8 +262,8 @@ notrace int __vdso_gettimeofday(struct timeval *tv, struct timezone *tz)
 		tv->tv_usec = ts.tv_nsec / 1000;
 	}
 	if (tz) {
-		tz->tz_minuteswest = vdata->tz_minuteswest;
-		tz->tz_dsttime = vdata->tz_dsttime;
+		tz->tz_minuteswest = vd->tz_minuteswest;
+		tz->tz_dsttime = vd->tz_dsttime;
 	}
 
 	return ret;
