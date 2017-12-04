@@ -2497,6 +2497,7 @@ walt_task_in_cum_window_demand(struct rq *rq, struct task_struct *p)
 #define arch_scale_freq_invariant()	(false)
 #endif
 
+<<<<<<< HEAD
 enum sched_boost_policy {
 	SCHED_BOOST_NONE,
 	SCHED_BOOST_ON_BIG,
@@ -3098,3 +3099,14 @@ struct sched_avg_stats {
 	int nr_max;
 };
 extern void sched_get_nr_running_avg(struct sched_avg_stats *stats);
+=======
+static inline unsigned long cpu_util_dl(struct rq *rq)
+{
+	return (rq->dl.running_bw * SCHED_CAPACITY_SCALE) >> BW_SHIFT;
+}
+
+static inline unsigned long cpu_util_cfs(struct rq *rq)
+{
+	return rq->cfs.avg.util_avg;
+}
+>>>>>>> d4edd662ac16... sched/cpufreq: Use the DEADLINE utilization signal
