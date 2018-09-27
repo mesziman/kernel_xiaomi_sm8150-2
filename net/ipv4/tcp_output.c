@@ -235,7 +235,10 @@ void tcp_select_initial_window(struct net *net, int __space, __u32 mss,
 	if (sysctl_tcp_workaround_signed_windows)
 		(*rcv_wnd) = min(space, MAX_TCP_WINDOW);
 	else
-		(*rcv_wnd) = space;
+		(*rcv_wnd) = min_t(u32, space, U16_MAX);
+
+	if (init_rcv_wnd)
+		*rcv_wnd = min(*rcv_wnd, init_rcv_wnd * mss);
 
 	(*rcv_wscale) = 0;
 	if (wscale_ok) {
@@ -249,12 +252,15 @@ void tcp_select_initial_window(struct net *net, int __space, __u32 mss,
 		}
 	}
 
+<<<<<<< HEAD
 	if (mss > (1 << *rcv_wscale)) {
 		if (!init_rcv_wnd) /* Use default unless specified otherwise */
 			init_rcv_wnd = tcp_default_init_rwnd(net, mss);
 		*rcv_wnd = min(*rcv_wnd, init_rcv_wnd * mss);
 	}
 
+=======
+>>>>>>> a66e8be86854... tcp: up initial rmem to 128KB and SYN rwin to around 64KB
 	/* Set the clamp no higher than max representable value */
 	(*window_clamp) = min_t(__u32, U16_MAX << (*rcv_wscale), *window_clamp);
 }
