@@ -192,6 +192,7 @@ SECTIONS
 	__rela_offset	= ABSOLUTE(ADDR(.rela.dyn) - KIMAGE_VADDR);
 	__rela_size	= SIZEOF(.rela.dyn);
 
+
 #ifdef CONFIG_RELR
 	.relr.dyn : ALIGN(8) {
 		*(.relr.dyn)
