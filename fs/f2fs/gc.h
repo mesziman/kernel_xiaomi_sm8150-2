@@ -5,6 +5,8 @@
  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
  *             http://www.samsung.com/
  */
+#include <linux/wakelock.h>
+
 #define GC_THREAD_MIN_WB_PAGES		1	/*
 						 * a threshold to determine
 						 * whether IO subsystem is idle
@@ -13,7 +15,6 @@
 #define DEF_GC_THREAD_URGENT_SLEEP_TIME	500	/* 500 ms */
 #define DEF_GC_THREAD_MIN_SLEEP_TIME	30000	/* milliseconds */
 #define DEF_GC_THREAD_MAX_SLEEP_TIME	60000
-#define DEF_GC_THREAD_NOGC_SLEEP_TIME	300000	/* wait 5 min */
 
 /* choose candidates from sections which has age of more than 7 days */
 #define DEF_GC_THREAD_AGE_THRESHOLD		(60 * 60 * 24 * 7)
@@ -22,6 +23,7 @@
 #define DEF_GC_THREAD_AGE_WEIGHT		60	/* age weight */
 #define DEFAULT_ACCURACY_CLASS			10000	/* accuracy class */
 
+#define DEF_GC_THREAD_NOGC_SLEEP_TIME	1800000	/* wait 30 min */
 #define LIMIT_INVALID_BLOCK	40 /* percentage over total user space */
 #define LIMIT_FREE_BLOCK	40 /* percentage over invalid + free space */
 
@@ -33,6 +35,7 @@
 struct f2fs_gc_kthread {
 	struct task_struct *f2fs_gc_task;
 	wait_queue_head_t gc_wait_queue_head;
+	struct wake_lock gc_wakelock;
 
 	/* for gc sleep time */
 	unsigned int urgent_sleep_time;
