@@ -155,12 +155,7 @@ static int tsens2xxx_get_temp(struct tsens_sensor *sensor, int *temp)
 	sensor_addr = TSENS_TM_SN_STATUS(tmdev->tsens_tm_addr);
 	trdy = TSENS_TM_TRDY(tmdev->tsens_tm_addr);
 
-<<<<<<< HEAD
-	code = readl_relaxed_no_log(trdy);
-
-=======
 	code = readl_relaxed(trdy);
->>>>>>> a437af044a95... treewide: remove remaining _no_log() usage
 	if (!((code & TSENS_TM_TRDY_FIRST_ROUND_COMPLETE) >>
 		    TSENS_TM_TRDY_FIRST_ROUND_COMPLETE_SHIFT)) {
 		if (atomic_read(&in_tsens_reinit)) {
