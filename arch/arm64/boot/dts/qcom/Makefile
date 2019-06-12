@@ -1,3 +1,11 @@
+ifeq ($(CONFIG_MACH_XIAOMI_SM8150),y)
+ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+dtbo-$(CONFIG_ARCH_SM8150) += \
+		cepheus-sm8150-overlay.dtbo
+
+cepheus-sm8150-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2.dtb
+endif
+else
 # SPDX-License-Identifier: GPL-2.0
 ifeq ($(TARGET_BOARD_TYPE),auto)
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
@@ -469,18 +477,6 @@ dtb-$(CONFIG_ARCH_SDXPRAIRIE) += sdxprairie-rumi.dtb \
 	sdxprairie-pcie-ep-mtp.dtb \
 	sdxprairie-dsda-mtp.dtb \
 	sdxprairie-v2-mtp.dtb \
-	sdxprairie-v2-mtp-cpe.dtb \
-	sdxprairie-v2-pcie-ep-mtp.dtb \
-	sdxprairie-v2-mtp-v1.1-cpe.dtb \
-	sdxprairie-v2-mtp-v1.1.dtb \
-	sdxprairie-v2-mtp-le-cpe.dtb \
-	sdxprairie-v2-mtp-au-dsda.dtb \
-	sa515m-v2-ttp.dtb \
-	sa515m-v2-ttp-usb-ep.dtb \
-	sa515m-v2-ttp-pcie-ep.dtb \
-	sa515m-v2-ttp-flashless-usb-ep.dtb \
-	sa515m-v2-ttp-flashless-pcie-ep.dtb \
-	sa515m-v2-ttp-emmc.dtb \
 	sa515m-ccard.dtb \
 	sa515m-ccard-pcie-ep.dtb \
 	sa515m-ccard-usb-ep.dtb \
