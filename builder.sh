@@ -44,7 +44,16 @@ echo "=========================debug============================================
 git revert c29f49fee539 --no-edit;
 make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
-make -s O=out -C $KERNEL_DIR  -j$buildspeed ARCH=arm64 CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf- CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi- 2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
+make -s O=out -C $KERNEL_DIR -j$buildspeed ARCH=arm64 
+CC=clang \
+LD=lld \
+CLANG_TRIPLE=aarch64-linux-gnu- \
+CROSS_COMPILE=aarch64-linux-gnu-  \
+AR=$TOOLCHAINDIR/bin/llvm-ar \
+NM=$TOOLCHAINDIR/bin/llvm-nm \
+OBJCOPY=$TOOLCHAINDIR/bin/llvm-objcopy \
+OBJDUMP=$TOOLCHAINDIR/bin/llvm-objdump \
+CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi- 2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
 } || {
