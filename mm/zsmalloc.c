@@ -2150,7 +2150,6 @@ static void zs_page_putback(struct page *page)
 		putback_zspage_deferred(pool, class, zspage);
 		zs_pool_dec_isolated(pool);
 	}
-
 	spin_unlock(&class->lock);
 }
 
