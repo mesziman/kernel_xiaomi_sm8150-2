@@ -1,3 +1,2 @@
-Changelogs : 
- - merged LA.UM.8.1.r1-15100-sm8150.0
- - merged 4.14.184
+Changelogs :
+ - sched improvements
