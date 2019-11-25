@@ -4958,7 +4958,7 @@ bool inline fts_touchmode_edgefilter(unsigned int touch_id, int x, int y)
 	return false;
 }
 
-int fts_read_touchmode_data()
+int fts_read_touchmode_data(void)
 {
 	int ret = 0;
 	u8 get_cmd[2] = {0xc1, 0x05};
@@ -5007,7 +5007,7 @@ int fts_read_touchmode_data()
 	return ret;
 }
 
-static void fts_init_touchmode_data()
+static void fts_init_touchmode_data(void)
 {
 	int i;
 
@@ -5129,7 +5129,7 @@ static void fts_edge_rejection(bool on, int value)
 	return;
 }
 
-static void fts_update_grip_mode()
+static void fts_update_grip_mode(void)
 {
 	int i, ret;
 	u8 grip_cmd[9] = {0xc0, 0x08, 0x00,};
@@ -5250,7 +5250,7 @@ static void fts_update_grip_mode()
 	return;
 }
 
-static void fts_update_touchmode_data()
+static void fts_update_touchmode_data(void)
 {
 	bool update = false;
 	int i, j, ret = 0;
