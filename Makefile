@@ -310,9 +310,10 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-ARCH		?= $(SUBARCH)
-CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
+override ARCH          := arm64
+override CROSS_COMPILE := /root/aarch64-elf-gcc/bin/aarch64-elf-
+override CROSS_COMPILE_ARM32  := /root/arm-eabi-gcc/bin/arm-eabi-
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
 SRCARCH 	:= $(ARCH)
@@ -426,6 +427,13 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -std=gnu89
+
+# Optimization for sm8150
+KBUILD_CFLAGS+= -mcpu=cortex-a76.cortex-a55+crc+crypto -Werror=vla
+
+KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-835769)
+KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-843419)
+
 KBUILD_CPPFLAGS := -D__KERNEL__
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
@@ -688,13 +696,6 @@ ifdef CONFIG_PROFILE_ALL_BRANCHES
 KBUILD_CFLAGS	+= -O2 $(call cc-disable-warning,maybe-uninitialized,)
 else
 KBUILD_CFLAGS += -O2
-ifeq ($(cc-name),gcc)
-KBUILD_CFLAGS += -mcpu=cortex-a76.cortex-a55 -mtune=cortex-a76.cortex-a55
-endif
-ifeq ($(cc-name),clang)
-KBUILD_CFLAGS += -O3
-KBUILD_CFLAGS += -mcpu=cortex-a55 -mtune=cortex-a55
-endif
 endif
 endif
 
