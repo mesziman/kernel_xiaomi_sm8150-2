@@ -422,14 +422,21 @@ LINUXINCLUDE    := \
 		$(USERINCLUDE)
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
+
+GCC6WARNINGS	= -Wno-bool-compare -Wno-misleading-indentation -Wno-format -Wno-logical-not-parentheses
+GCC7WARNINGS	= $(GCC6WARNINGS) -Wno-int-in-bool-context -Wno-memset-elt-size -Wno-parentheses -Wno-bool-operation -Wno-duplicate-decl-specifier -Wno-stringop-overflow -Wno-format-truncation -Wno-format-overflow -fno-modulo-sched
+GCC8WARNINGS	= $(GCC7WARNINGS) -Wno-multistatement-macros -Wno-error=sizeof-pointer-div -Wno-sizeof-pointer-div -Wno-attribute-alias -Wno-stringop-truncation
+GCC9WARNINGS	= $(GCC8WARNINGS) -Wno-address-of-packed-member -Wno-missing-attributes
+
+
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -fshort-wchar \
 		   -Werror-implicit-function-declaration \
-		   -Wno-format-security \
-		   -std=gnu89
+		   -Wno-format-security -Wno-maybe-uninitialized \
+		   -std=gnu89 -Wno-designated-init $(GCC9WARNINGS)
 
 # Optimization for sm8150
-KBUILD_CFLAGS+= -mcpu=cortex-a76.cortex-a55+crc+crypto -Werror=vla
+KBUILD_CFLAGS+= -mcpu=cortex-a76.cortex-a55+crc+crypto
 
 KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-835769)
 KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-843419)
