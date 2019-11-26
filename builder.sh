@@ -29,10 +29,10 @@ echo "ccnamekbuild : $(shell ${CC} -v 2>&1 | grep -q "clang version" && echo cla
 
 echo "ccname noshell build : $(${CC} -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)"
 echo "===================WHICH========================="
-
+NOW=$( date +"%Y-%m-%d-%H-%M"  )
 make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
-make O=out -C $KERNEL_DIR  -j$( nproc --all ) ARCH=arm64 CROSS_COMPILE=aarch64-elf- CROSS_COMPILE_ARM32=arm-eabi-
+make O=out -C $KERNEL_DIR  -j$( nproc --all ) ARCH=arm64 CROSS_COMPILE=aarch64-elf- CROSS_COMPILE_ARM32=arm-eabi- | 2>&1 | tee -a ${WERCKER_REPORT_ARTIFACTS_DIR}/log_${NOW}.log
 
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/capricorn
@@ -44,3 +44,5 @@ fi
 echo "======================VERIFY CLANG==============================="
 cat $KERNEL_DIR/out/include/generated/compile.h
 echo "======================VERIFY CLANG==============================="
+
+grep "error:" ${WERCKER_REPORT_ARTIFACTS_DIR}/log_${NOW}.log >> ${WERCKER_REPORT_ARTIFACTS_DIR}/log_errors.log
