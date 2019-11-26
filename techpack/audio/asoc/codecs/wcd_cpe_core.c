@@ -1251,7 +1251,7 @@ static void wcd_cpe_cmi_afe_cb(const struct cmi_api_notification *param)
 	pr_debug("%s: param->result = %d\n",
 		 __func__, param->result);
 
-	hdr = (struct cmi_hdr *) param->message;
+  hdr = (struct cmi_hdr *) param->message;
 
 	/*
 	 * for AFE cmd response, port id is
@@ -2256,7 +2256,7 @@ static int fill_cmi_header(struct cmi_hdr *hdr,
 		pr_err("Invalid header creation request\n");
 		return -EINVAL;
 	}
-
+  memset(hdr, 0, sizeof(struct cmi_hdr));
 	CMI_HDR_SET_SESSION(hdr, session_id);
 	CMI_HDR_SET_SERVICE(hdr, service_id);
 	if (version)
