@@ -44,5 +44,7 @@ fi
 echo "======================VERIFY CLANG==============================="
 cat $KERNEL_DIR/out/include/generated/compile.h
 echo "======================VERIFY CLANG==============================="
-
+echo "======================VERIFY DTB  ==============================="
+echo $(shell find out/arch/$(ARCH)/boot/dts/** -type f -name "*.dtb" | sort)
+echo "======================VERIFY DTB  ==============================="
 grep "error:" ${WERCKER_REPORT_ARTIFACTS_DIR}/log_${NOW}.log >> ${WERCKER_REPORT_ARTIFACTS_DIR}/log_errors.log
