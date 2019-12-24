@@ -21,6 +21,7 @@
 
 #include "zcomp.h"
 
+#define SECTOR_SHIFT		9
 #define SECTORS_PER_PAGE_SHIFT	(PAGE_SHIFT - SECTOR_SHIFT)
 #define SECTORS_PER_PAGE	(1 << SECTORS_PER_PAGE_SHIFT)
 #define ZRAM_LOGICAL_BLOCK_SHIFT 12
@@ -56,14 +57,10 @@ enum zram_pageflags {
 
 /*-- Data structures */
 
-struct zram_entry {
-	unsigned long handle;
-};
-
 /* Allocated for each disk page */
 struct zram_table_entry {
 	union {
-		struct zram_entry *entry;
+		unsigned long handle;
 		unsigned long element;
 	};
 	unsigned long flags;
