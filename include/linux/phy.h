@@ -414,6 +414,7 @@ struct phy_device {
 	bool suspended_by_mdio_bus;
 	bool sysfs_links;
 	bool loopback_enabled;
+	bool skip_sw_reset;
 
 	enum phy_state state;
 
