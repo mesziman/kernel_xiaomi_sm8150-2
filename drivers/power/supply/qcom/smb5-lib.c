@@ -566,7 +566,7 @@ static const struct apsd_result *smblib_get_apsd_result(struct smb_charger *chg)
 
 	rc = smblib_read(chg, APSD_STATUS_REG, &apsd_stat);
 	if (rc < 0) {
-		smblib_err(chg, "Couldn't read APSD_STATUS rc=%d\n", rc);
+		smblib_dbg(chg, PR_REGISTER, "Couldn't read APSD_STATUS rc=%d\n", rc);
 		return result;
 	}
 	smblib_dbg(chg, PR_REGISTER, "APSD_STATUS = 0x%02x\n", apsd_stat);
@@ -576,7 +576,7 @@ static const struct apsd_result *smblib_get_apsd_result(struct smb_charger *chg)
 
 	rc = smblib_read(chg, APSD_RESULT_STATUS_REG, &stat);
 	if (rc < 0) {
-		smblib_err(chg, "Couldn't read APSD_RESULT_STATUS rc=%d\n",
+		smblib_dbg(chg, PR_REGISTER,  "Couldn't read APSD_RESULT_STATUS rc=%d\n",
 			rc);
 		return result;
 	}
