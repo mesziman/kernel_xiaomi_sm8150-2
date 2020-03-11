@@ -48,15 +48,14 @@ union futex_key {
 };
 
 #define FUTEX_KEY_INIT (union futex_key) { .both = { .ptr = NULL } }
-
+long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+	      u32 __user *uaddr2, u32 val2, u32 val3);
 #ifdef CONFIG_FUTEX
 enum {
 	FUTEX_STATE_OK,
 	FUTEX_STATE_EXITING,
 	FUTEX_STATE_DEAD,
 };
-long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
-	      u32 __user *uaddr2, u32 val2, u32 val3);
 static inline void futex_init_task(struct task_struct *tsk)
 {
 	tsk->robust_list = NULL;
@@ -69,18 +68,18 @@ static inline void futex_init_task(struct task_struct *tsk)
 	mutex_init(&tsk->futex_exit_mutex);
 }
 
-static inline long do_futex(u32 __user *uaddr, int op, u32 val,
-			    ktime_t *timeout, u32 __user *uaddr2,
-			    u32 val2, u32 val3)
-{
-	return -EINVAL;
-}
 
 void futex_exit_recursive(struct task_struct *tsk);
 void futex_exit_release(struct task_struct *tsk);
 void futex_exec_release(struct task_struct *tsk);
 
 #else
+static inline long do_futex(u32 __user *uaddr, int op, u32 val,
+			    ktime_t *timeout, u32 __user *uaddr2,
+			    u32 val2, u32 val3)
+{
+	return -EINVAL;
+}
 static inline void futex_init_task(struct task_struct *tsk) { }
 static inline void futex_exit_recursive(struct task_struct *tsk) { }
 static inline void futex_exit_release(struct task_struct *tsk) { }
