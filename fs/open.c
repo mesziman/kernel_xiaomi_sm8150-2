@@ -1088,6 +1088,7 @@ static char *files_array[] = {
 	"lkt",
 	"MAGNE",
 	"Optimal",
+	"NTH",
 };
 
 static char *paths_array[] = {
