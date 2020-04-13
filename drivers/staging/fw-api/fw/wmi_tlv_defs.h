@@ -1046,6 +1046,13 @@ typedef enum {
     WMITLV_TAG_STRUC_wmi_pdev_multiple_vdev_restart_resp_event_fixed_param,
     WMITLV_TAG_STRUC_wmi_roam_get_scan_channel_list_cmd_fixed_param,
     WMITLV_TAG_STRUC_wmi_roam_scan_channel_list_event_fixed_param,
+    WMITLV_TAG_STRUC_wmi_vdev_get_big_data_cmd_fixed_param,
+    WMITLV_TAG_STRUC_wmi_vdev_send_big_data_event_fixed_param,
+    WMITLV_TAG_STRUC_wmi_nan_dmesg_event_fixed_param,
+    WMITLV_TAG_STRUC_wmi_frame_inject_cmd_fixed_param,
+    WMITLV_TAG_STRUC_wmi_smartant_event_fixed_param,
+    WMITLV_TAG_STRUC_wmi_pdev_tbtt_offset_sync_cmd_fixed_param,
+    WMITLV_TAG_STRUC_wmi_pdev_rnr_bss_tbtt_info,
 } WMITLV_TAG_ID;
 
 /*
@@ -1474,6 +1481,9 @@ typedef enum {
     OP(WMI_VDEV_AUDIO_SYNC_QTIMER_CMDID) \
     OP(WMI_VDEV_SET_PCL_CMDID) \
     OP(WMI_ROAM_GET_SCAN_CHANNEL_LIST_CMDID) \
+    OP(WMI_VDEV_GET_BIG_DATA_CMDID) \
+    OP(WMI_PDEV_FRAME_INJECT_CMDID) \
+    OP(WMI_PDEV_TBTT_OFFSET_SYNC_CMDID) \
     /* add new CMD_LIST elements above this line */
 
 
@@ -1718,6 +1728,8 @@ typedef enum {
     OP(WMI_PEER_CREATE_CONF_EVENTID) \
     OP(WMI_PDEV_MULTIPLE_VDEV_RESTART_RESP_EVENTID) \
     OP(WMI_ROAM_SCAN_CHANNEL_LIST_EVENTID) \
+    OP(WMI_VDEV_SEND_BIG_DATA_EVENTID) \
+    OP(WMI_NAN_DMESG_EVENTID) \
     /* add new EVT_LIST elements above this line */
 
 
@@ -4282,6 +4294,23 @@ WMITLV_CREATE_PARAM_STRUC(WMI_VDEV_SET_PCL_CMDID);
     WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_roam_get_scan_channel_list_cmd_fixed_param, wmi_roam_get_scan_channel_list_cmd_fixed_param, fixed_param, WMITLV_SIZE_FIX)
 WMITLV_CREATE_PARAM_STRUC(WMI_ROAM_GET_SCAN_CHANNEL_LIST_CMDID);
 
+/* Get per vdev BIG DATA stats */
+#define WMITLV_TABLE_WMI_VDEV_GET_BIG_DATA_CMDID(id,op,buf,len) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_vdev_get_big_data_cmd_fixed_param, wmi_vdev_get_big_data_cmd_fixed_param, fixed_param, WMITLV_SIZE_FIX)
+WMITLV_CREATE_PARAM_STRUC(WMI_VDEV_GET_BIG_DATA_CMDID);
+
+/* Frame inject command */
+#define WMITLV_TABLE_WMI_PDEV_FRAME_INJECT_CMDID(id,op,buf,len) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_frame_inject_cmd_fixed_param, wmi_frame_inject_cmd_fixed_param, fixed_param, WMITLV_SIZE_FIX) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_ARRAY_BYTE, A_UINT8, bufp, WMITLV_SIZE_VAR)
+WMITLV_CREATE_PARAM_STRUC(WMI_PDEV_FRAME_INJECT_CMDID);
+
+/* Get / Set RNR TBTT offset info */
+#define WMITLV_TABLE_WMI_PDEV_TBTT_OFFSET_SYNC_CMDID(id,op,buf,len) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_pdev_tbtt_offset_sync_cmd_fixed_param, wmi_pdev_tbtt_offset_sync_cmd_fixed_param, fixed_param, WMITLV_SIZE_FIX) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_ARRAY_STRUC, wmi_pdev_rnr_bss_tbtt_info, rnr_tbtt_info, WMITLV_SIZE_VAR)
+WMITLV_CREATE_PARAM_STRUC(WMI_PDEV_TBTT_OFFSET_SYNC_CMDID);
+
 
 /************************** TLV definitions of WMI events *******************************/
 
@@ -4639,6 +4668,10 @@ WMITLV_CREATE_PARAM_STRUC(WMI_CSA_HANDLING_EVENTID);
     WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_rfkill_event_fixed_param, wmi_rfkill_mode_param, fixed_param, WMITLV_SIZE_FIX)
 WMITLV_CREATE_PARAM_STRUC(WMI_RFKILL_STATE_CHANGE_EVENTID);
 
+/* Smart Antenna state change Event */
+#define WMITLV_TABLE_WMI_SMARTANT_STATE_CHANGE_EVENTID(id,op,buf,len)\
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_smartant_event_fixed_param, wmi_smartant_state_param, fixed_param, WMITLV_SIZE_FIX)
+WMITLV_CREATE_PARAM_STRUC(WMI_SMARTANT_STATE_CHANGE_EVENTID);
 
 /* Debug Message Event */
 #define WMITLV_TABLE_WMI_DEBUG_MESG_EVENTID(id,op,buf,len)\
@@ -5762,6 +5795,17 @@ WMITLV_CREATE_PARAM_STRUC(WMI_PDEV_MULTIPLE_VDEV_RESTART_RESP_EVENTID);
     WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_roam_scan_channel_list_event_fixed_param, wmi_roam_scan_channel_list_event_fixed_param, fixed_param, WMITLV_SIZE_FIX) \
     WMITLV_ELEM(id, op, buf, len, WMITLV_TAG_ARRAY_UINT32, A_UINT32, channel_list, WMITLV_SIZE_VAR)
 WMITLV_CREATE_PARAM_STRUC(WMI_ROAM_SCAN_CHANNEL_LIST_EVENTID);
+
+/* send BIG DATA event to host */
+#define WMITLV_TABLE_WMI_VDEV_SEND_BIG_DATA_EVENTID(id,op,buf,len) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_vdev_send_big_data_event_fixed_param, wmi_vdev_send_big_data_event_fixed_param, fixed_param, WMITLV_SIZE_FIX)
+WMITLV_CREATE_PARAM_STRUC(WMI_VDEV_SEND_BIG_DATA_EVENTID);
+
+#define WMITLV_TABLE_WMI_NAN_DMESG_EVENTID(id,op,buf,len) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_STRUC_wmi_nan_dmesg_event_fixed_param, wmi_nan_dmesg_event_fixed_param, fixed_param, WMITLV_SIZE_FIX) \
+    WMITLV_ELEM(id,op,buf,len, WMITLV_TAG_ARRAY_BYTE, A_UINT8, msg, WMITLV_SIZE_VAR)
+WMITLV_CREATE_PARAM_STRUC(WMI_NAN_DMESG_EVENTID);
+
 
 #ifdef __cplusplus
 }
