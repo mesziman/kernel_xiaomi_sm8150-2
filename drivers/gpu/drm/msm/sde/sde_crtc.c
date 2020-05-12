@@ -1841,6 +1841,8 @@ static int pstate_cmp(const void *a, const void *b)
 	pa_zpos = sde_plane_get_property(pa->sde_pstate, PLANE_PROP_ZPOS);
 	pb_zpos = sde_plane_get_property(pb->sde_pstate, PLANE_PROP_ZPOS);
 
+	SDE_ERROR("pa_zpos: %d, pb_zpos: %d\n", pa_zpos, pb_zpos);
+
 	if (pa_zpos != pb_zpos)
 		rc = pa_zpos - pb_zpos;
 	else
