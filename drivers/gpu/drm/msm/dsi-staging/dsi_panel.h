@@ -221,7 +221,6 @@ struct dsi_panel {
 
 	bool doze_state;
 	bool fod_hbm_status;
-	bool resend_ea;
 
 	u32 doze_backlight_threshold;
 };
