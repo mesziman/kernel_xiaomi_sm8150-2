@@ -1005,6 +1005,29 @@ int gsi_unmap_base(void)
 }
 EXPORT_SYMBOL(gsi_unmap_base);
 
+int gsi_is_mcs_enabled(void)
+{
+	uint32_t mcs_enable = 0;
+
+	if (!gsi_ctx) {
+		pr_err("%s:%d gsi context not allocated\n", __func__, __LINE__);
+		return GSI_STATUS_NODEV;
+	}
+
+	if (!gsi_ctx->base) {
+		GSIERR("GSI base is not mapped\n");
+		return -GSI_STATUS_NODEV;
+	}
+
+	mcs_enable = gsi_readl(gsi_ctx->base + GSI_GSI_MCS_CFG_OFFS);
+
+	pr_info("%s:%d MCS enabled:%x\n", __func__, __LINE__, mcs_enable);
+
+	return (mcs_enable & GSI_GSI_MCS_CFG_MCS_ENABLE_BMSK);
+}
+EXPORT_SYMBOL(gsi_is_mcs_enabled);
+
+
 int gsi_register_device(struct gsi_per_props *props, unsigned long *dev_hdl)
 {
 	int res;
@@ -3833,7 +3856,7 @@ int gsi_config_channel_mode(unsigned long chan_hdl, enum gsi_chan_mode mode)
 				spin_unlock_irqrestore(
 					&ctx->evtr->ring.slock, flags);
 				ctx->stats.poll_pending_irq++;
-				GSIDBG("In IEOB WA pnd cnt = %d prvmode = %d\n",
+				GSIDBG("In IEOB WA pnd cnt =%lu prvmode = %d\n",
 						ctx->stats.poll_pending_irq,
 						chan_mode);
 				if (chan_mode == GSI_CHAN_MODE_POLL)

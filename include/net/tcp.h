@@ -55,7 +55,7 @@ extern struct inet_hashinfo tcp_hashinfo;
 extern struct percpu_counter tcp_orphan_count;
 void tcp_time_wait(struct sock *sk, int state, int timeo);
 
-#define MAX_TCP_HEADER	(128 + MAX_HEADER)
+#define MAX_TCP_HEADER	L1_CACHE_ALIGN(128 + MAX_HEADER)
 #define MAX_TCP_OPTION_SPACE 40
 #define TCP_MIN_SND_MSS		48
 #define TCP_MIN_GSO_SIZE	(TCP_MIN_SND_MSS - MAX_TCP_OPTION_SPACE)
@@ -1134,7 +1134,7 @@ void tcp_rate_check_app_limited(struct sock *sk);
  */
 static inline int tcp_is_sack(const struct tcp_sock *tp)
 {
-	return tp->rx_opt.sack_ok;
+	return likely(tp->rx_opt.sack_ok);
 }
 
 static inline bool tcp_is_reno(const struct tcp_sock *tp)

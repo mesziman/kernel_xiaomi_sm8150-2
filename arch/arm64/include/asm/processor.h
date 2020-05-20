@@ -24,6 +24,14 @@
 #define KERNEL_DS	UL(-1)
 #define USER_DS		(TASK_SIZE_64 - 1)
 
+/*
+ * On arm64 systems, unaligned accesses by the CPU are cheap, and so there is
+ * no point in shifting all network buffers by 2 bytes just to make some IP
+ * header fields appear aligned in memory, potentially sacrificing some DMA
+ * performance on some platforms.
+ */
+#define NET_IP_ALIGN	0
+
 #ifndef __ASSEMBLY__
 
 /*
@@ -255,6 +263,14 @@ static inline void spin_lock_prefetch(const void *ptr)
 
 void cpu_enable_pan(const struct arm64_cpu_capabilities *__unused);
 void cpu_enable_cache_maint_trap(const struct arm64_cpu_capabilities *__unused);
+
+#ifdef CONFIG_ARM64_TAGGED_ADDR_ABI
+/* PR_{SET,GET}_TAGGED_ADDR_CTRL prctl */
+long set_tagged_addr_ctrl(unsigned long arg);
+long get_tagged_addr_ctrl(void);
+#define SET_TAGGED_ADDR_CTRL(arg)	set_tagged_addr_ctrl(arg)
+#define GET_TAGGED_ADDR_CTRL()		get_tagged_addr_ctrl()
+#endif
 
 #endif /* __ASSEMBLY__ */
 #endif /* __ASM_PROCESSOR_H */

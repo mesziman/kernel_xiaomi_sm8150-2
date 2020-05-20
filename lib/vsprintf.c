@@ -337,7 +337,7 @@ char *put_dec(char *buf, unsigned long long n)
  *
  * If speed is not important, use snprintf(). It's easy to read the code.
  */
-int num_to_str(char *buf, int size, unsigned long long num)
+int num_to_str(char *buf, int size, unsigned long long num, unsigned int width)
 {
 	/* put_dec requires 2-byte alignment of the buffer. */
 	char tmp[sizeof(num) * 3] __aligned(2);
@@ -351,11 +351,21 @@ int num_to_str(char *buf, int size, unsigned long long num)
 		len = put_dec(tmp, num) - tmp;
 	}
 
-	if (len > size)
+	if (len > size || width > size)
 		return 0;
+
+	if (width > len) {
+		width = width - len;
+		for (idx = 0; idx < width; idx++)
+			buf[idx] = ' ';
+	} else {
+		width = 0;
+	}
+
 	for (idx = 0; idx < len; ++idx)
-		buf[idx] = tmp[len - idx - 1];
-	return len;
+		buf[idx + width] = tmp[len - idx - 1];
+
+	return len + width;
 }
 
 #define SIGN	1		/* unsigned/signed, must be 1 */
@@ -1692,16 +1702,12 @@ static int __init initialize_ptr_random(void)
 early_initcall(initialize_ptr_random);
 
 /* Maps a pointer to a 32 bit unique identifier. */
-static char *ptr_to_id(char *buf, char *end, void *ptr, struct printf_spec spec)
+static inline int __ptr_to_hashval(const void *ptr, unsigned long *hashval_out)
 {
 	unsigned long hashval;
-	const int default_width = 2 * sizeof(ptr);
 
-	if (unlikely(!have_filled_random_ptr_key)) {
-		spec.field_width = default_width;
-		/* string length must be less than default_width */
-		return string(buf, end, "(ptrval)", spec);
-	}
+	if (unlikely(!have_filled_random_ptr_key))
+		return -EAGAIN;
 
 #ifdef CONFIG_64BIT
 	hashval = (unsigned long)siphash_1u64((u64)ptr, &ptr_key);
@@ -1713,6 +1719,27 @@ static char *ptr_to_id(char *buf, char *end, void *ptr, struct printf_spec spec)
 #else
 	hashval = (unsigned long)siphash_1u32((u32)ptr, &ptr_key);
 #endif
+	*hashval_out = hashval;
+	return 0;
+}
+
+int ptr_to_hashval(const void *ptr, unsigned long *hashval_out)
+{
+	return __ptr_to_hashval(ptr, hashval_out);
+}
+
+static char *ptr_to_id(char *buf, char *end, void *ptr, struct printf_spec spec)
+{
+	unsigned long hashval;
+	const int default_width = 2 * sizeof(ptr);
+	int ret;
+
+	ret = __ptr_to_hashval(ptr, &hashval);
+	if (ret) {
+		spec.field_width = default_width;
+		/* string length must be less than default_width */
+		return string(buf, end, "(ptrval)", spec);
+	}
 
 	spec.flags |= SMALL;
 	if (spec.field_width == -1) {

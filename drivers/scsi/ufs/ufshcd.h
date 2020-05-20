@@ -609,6 +609,7 @@ enum ufshcd_ctx {
 	H8_EXIT_WORK,
 	UIC_CMD_SEND,
 	PWRCTL_CMD_SEND,
+	PWR_CHG_NOTIFY,
 	TM_CMD_SEND,
 	XFR_REQ_COMPL,
 	CLK_SCALE_WORK,
@@ -1487,7 +1488,8 @@ static inline void ufshcd_vops_remove_debugfs(struct ufs_hba *hba)
 		hba->var->vops->remove_debugfs(hba);
 }
 #else
-static inline void ufshcd_vops_add_debugfs(struct ufs_hba *hba, struct dentry *)
+static inline void ufshcd_vops_add_debugfs(struct ufs_hba *hba,
+					   struct dentry *root)
 {
 }
 

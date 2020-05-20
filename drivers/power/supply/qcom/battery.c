@@ -1599,7 +1599,7 @@ static int pl_awake_vote_callback(struct votable *votable,
 	struct pl_data *chip = data;
 
 	if (awake)
-		__pm_stay_awake(chip->pl_ws);
+		__pm_wakeup_event(chip->pl_ws, 500);
 	else
 		__pm_relax(chip->pl_ws);
 
@@ -1971,7 +1971,7 @@ int qcom_batt_init(struct charger_param *chg_param)
 	pl_config_init(chip, chg_param->smb_version);
 	chip->restricted_current = DEFAULT_RESTRICTED_CURRENT_UA;
 
-	chip->pl_ws = wakeup_source_register("qcom-battery");
+	chip->pl_ws = wakeup_source_register(NULL, "qcom-battery");
 	if (!chip->pl_ws)
 		goto cleanup;
 

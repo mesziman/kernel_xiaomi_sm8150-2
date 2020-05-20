@@ -86,6 +86,7 @@ static int __init ipc_init(void)
 {
 	int err_sem, err_msg;
 
+	proc_mkdir("sysvipc", NULL);
 	err_sem = sem_init();
 	WARN(err_sem, "ipc: sysv sem_init failed: %d\n", err_sem);
 	err_msg = msg_init();
@@ -750,13 +751,13 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
 			total++;
 	}
 
+	*new_pos = pos + 1;
 	if (total >= ids->in_use)
 		return NULL;
 
 	for (; pos < IPCMNI; pos++) {
 		ipc = idr_find(&ids->ipcs_idr, pos);
 		if (ipc != NULL) {
-			*new_pos = pos + 1;
 			rcu_read_lock();
 			ipc_lock_object(ipc);
 			return ipc;

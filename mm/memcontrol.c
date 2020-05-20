@@ -1983,6 +1983,15 @@ retry:
 	}
 
 	/*
+	 * Memcg doesn't have a dedicated reserve for atomic
+	 * allocations. But like the global atomic pool, we need to
+	 * put the burden of reclaim on regular allocation requests
+	 * and let these go through as privileged allocations.
+	 */
+	if (gfp_mask & __GFP_ATOMIC)
+		goto force;
+
+	/*
 	 * Unlike in global OOM situations, memcg is not in a physical
 	 * memory shortage.  Allow dying and OOM-killed tasks to
 	 * bypass the last charges so that they can exit quickly and
@@ -2429,7 +2438,7 @@ int memcg_kmem_charge(struct page *page, gfp_t gfp, int order)
 	struct mem_cgroup *memcg;
 	int ret = 0;
 
-	if (memcg_kmem_bypass())
+	if (mem_cgroup_disabled() || memcg_kmem_bypass())
 		return 0;
 
 	memcg = get_mem_cgroup_from_mm(current->mm);
@@ -5916,6 +5925,10 @@ void mem_cgroup_sk_alloc(struct sock *sk)
 	struct mem_cgroup *memcg;
 
 	if (!mem_cgroup_sockets_enabled)
+		return;
+
+	/* Do not associate the sock with unrelated interrupted task's memcg. */
+	if (in_interrupt())
 		return;
 
 	/* Do not associate the sock with unrelated interrupted task's memcg. */
