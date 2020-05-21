@@ -710,7 +710,6 @@ endif
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS   += -O3
 KBUILD_CFLAGS	+= -mcpu=cortex-a55+crypto -mtune=cortex-a55+crypto
-
 ifdef CONFIG_LLVM_POLLY
 KBUILD_CFLAGS	+= -mllvm -polly \
 		   -mllvm -polly-run-dce \
@@ -723,7 +722,7 @@ KBUILD_CFLAGS	+= -mllvm -polly \
 endif
 endif
 endif
-
+endif
 KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
 			$(call cc-disable-warning,maybe-uninitialized,))
 
