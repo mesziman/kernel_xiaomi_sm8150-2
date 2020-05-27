@@ -91,7 +91,6 @@
 #include <linux/livepatch.h>
 #include <linux/thread_info.h>
 #include <linux/cpufreq_times.h>
-#include <linux/cpu_input_boost.h>
 #include <linux/devfreq_boost.h>
 #include <linux/simple_lmk.h>
 
@@ -2076,7 +2075,6 @@ long _do_fork(unsigned long clone_flags,
 
 	/* Boost CPU to the max for 1000 ms when userspace launches an app */
 	if (task_is_zygote(current)) {
-		cpu_input_boost_kick_max(1000);
 		devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 1000);
 	}
 
