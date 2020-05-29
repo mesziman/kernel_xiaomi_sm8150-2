@@ -1,4 +1,6 @@
 #!/bin/bash
+git submodule init scripts
+git submodule update scripts
 
 KERNEL_DIR=$PWD
 ANYKERNEL_DIR=$KERNEL_DIR/AnyKernel3
@@ -22,8 +24,8 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAIN32}/lib"
 export ARCH=arm64
 export KBUILD_BUILD_USER="mesziman"
 export KBUILD_BUILD_HOST="github"
-export CROSS_COMPILE=aarch64-elf-
-export CROSS_COMPILE_ARM32=arm-eabi-
+export CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf-
+export CROSS_COMPILE_ARM32=${TOOLCHAIN32}/arm-eabi-
 #export CROSS_COMPILE=aarch64-linux-android-
 #export CROSS_COMPILE_ARM32=arm-linux-androideabi-
 #export LD_LIBRARY_PATH=$TOOLCHAINDIR/lib/
@@ -102,13 +104,13 @@ ${KERNEL_DIR}/scripts/config --file $KERNEL_DIR/out/.config \
     -d SOFTLOCKUP_DETECTOR \
     -d MHI_DEBUG
 
-make O=out -C $KERNEL_DIR  -j$buildspeed ARCH=arm64 CROSS_COMPILE=aarch64-elf- CROSS_COMPILE_ARM32=arm-eabi-
-
+make -s O=out -C $KERNEL_DIR  -j$buildspeed ARCH=arm64 CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf- CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi- | grep "error:"
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
 } || {
 if [ $? != 0 ]; then
   echo "FAILED BUILD"
+  find $KERNEL_DIR -iname "*dtb"
 fi
 }
 echo "======================VERIFY CLANG==============================="

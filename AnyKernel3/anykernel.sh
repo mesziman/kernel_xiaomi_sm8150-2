@@ -15,12 +15,12 @@ device.name2=cepheus-user
 device.name3=Mi 9
 device.name4=Xiaomi
 device.name5=
-supported.versions=10
+supported.versions=9, 10
 supported.patchlevels=
 '; } # end properties
 
 # shell variables
-block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;
+block=/dev/block/bootdevice/by-name/boot;
 is_slot_device=0;
 ramdisk_compression=auto;
 
