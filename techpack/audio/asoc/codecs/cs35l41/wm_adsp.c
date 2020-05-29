@@ -1247,7 +1247,7 @@ static int wm_adsp2_raw_read(size_t maxbulk, struct regmap *map,
 		ret = regmap_raw_read(map, reg + read_len,
 				      val + read_len, toread_len);
 		if (ret < 0) {
-			printk("%s failed, toread_len:%u reg base:%u reg:%u read_len:%u\n",
+			printk("%s failed, toread_len:%lu reg base:%u reg:%lu read_len:%lu\n",
 			       __func__, toread_len, reg,
 			       reg + read_len, read_len);
 			return ret;
