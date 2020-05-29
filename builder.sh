@@ -32,11 +32,8 @@ export CROSS_COMPILE_ARM32=${TOOLCHAIN32}/arm-eabi-
 export USE_CCACHE=1
 export CCACHE_DIR=$CCACHEDIR/.ccache
 echo "===================WHICH========================="
-echo "which 32tc $(which ${CROSS_COMPILE_ARM32}ld))"
-echo "which ${CROSS_COMPILE_ARM32}gcc"
-echo "realpath of 32tc $(realpath $(dir $(which ${CROSS_COMPILE_ARM32}ld))/..)"
-echo "ccnamekbuild : $(shell ${CC} -v 2>&1 | grep -q "clang version" && echo clang || echo gcc && echo $$ && echo $0)"
-
+echo "which 32tc $(which ${CROSS_COMPILE_ARM32}ld)"
+echo "which $(which ${CROSS_COMPILE_ARM32}gcc)"
 echo "ccname noshell build : $(${CC} -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)"
 echo "===================WHICH========================="
 
