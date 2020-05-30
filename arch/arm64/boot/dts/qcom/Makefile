@@ -59,26 +59,8 @@ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 		sa8155p-v2-adp-air-lxc-overlay.dtbo
 
 sm8150-cdp-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2.dtb
-sa8155-adp-star-overlay.dtbo-base := sa8155.dtb sa8155-v2.dtb
-sa8155p-adp-star-overlay.dtbo-base := sa8155p.dtb sa8155p-v2.dtb
-sa8155p-adp-star-lpass-overlay.dtbo := sa8155p.dtb sa8155p-v2.dtb
-sa8155-v2-adp-air-overlay.dtbo-base := sa8155.dtb sa8155-v2.dtb
-sa8155p-v2-adp-air-overlay.dtbo-base := sa8155p.dtb sa8155p-v2.dtb
-sa8155p-v2-adp-air-lpass-overlay.dtbo-base := sa8155p.dtb sa8155p-v2.dtb
-sa8155-v2-adp-air-lxc-overlay.dtbo-base := sa8155.dtb sa8155-v2.dtb
-sa8155p-v2-adp-air-lxc-overlay.dtbo-base := sa8155p.dtb sa8155p-v2.dtb
 else
-dtb-$(CONFIG_ARCH_SM8150)	+= sm8150-cdp.dtb \
-	sa8155-adp-star.dtb \
-	sa8155p-adp-star.dtb \
-	sa8155p-adp-star-lpass.dtb \
-	sa8155-v2-adp-star.dtb \
-	sa8155p-v2-adp-star.dtb \
-	sa8155-v2-adp-air.dtb \
-	sa8155p-v2-adp-air.dtb \
-	sa8155p-v2-adp-air-lpass.dtb \
-	sa8155p-v2-adp-air-capture.dtb \
-	sa8155p-v2-adp-star-capture.dtb
+dtb-$(CONFIG_ARCH_SM8150)	+= sm8150-cdp.dtb 
 
 endif
 
@@ -134,13 +116,6 @@ endif
 
 else # TARGET_BOARD_TYPE != auto
 
-dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-bullhead-rev-101.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-angler-rev-101.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
 dtb-$(CONFIG_ARCH_QCS403) += qcs403-iot-sku1.dtb \
 		qcs403-iot-sku3.dtb \
 		qcs403-iot-sku5.dtb \
@@ -203,12 +178,6 @@ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 		sm8150-rumi-overlay.dtbo \
 		sm8150-qrd-overlay.dtbo \
 		sm8150-qrd-dvt-overlay.dtbo \
-		sa8155-adp-star-overlay.dtbo \
-		sa8155p-adp-star-overlay.dtbo \
-		sa8155-v2-adp-air-overlay.dtbo \
-                sa8155p-v2-adp-air-overlay.dtbo \
-		sa8155-adp-alcor-overlay.dtbo \
-		sa8155p-adp-alcor-overlay.dtbo \
 		sm8150-sdx50m-cdp-overlay.dtbo \
 		sm8150-sdx50m-mtp-overlay.dtbo \
 		sm8150-sdx50m-mtp-2.5k-panel-overlay.dtbo \
@@ -228,12 +197,6 @@ sm8150-rumi-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2
 sm8150-qrd-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2.dtb
 sm8150-hdk-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2.dtb
 sm8150-qrd-dvt-overlay.dtbo-base := sm8150-v2.dtb sm8150p-v2.dtb
-sa8155-adp-star-overlay.dtbo-base := sa8155.dtb sa8155-v2.dtb
-sa8155p-adp-star-overlay.dtbo-base := sa8155p.dtb sa8155p-v2.dtb
-sa8155-v2-adp-air-overlay.dtbo-base := sa8155.dtb sa8155-v2.dtb
-sa8155p-v2-adp-air-overlay.dtbo-base := sa8155p.dtb sa8155p-v2.dtb
-sa8155-adp-alcor-overlay.dtbo-base := sa8155.dtb sa8155-v2.dtb
-sa8155p-adp-alcor-overlay.dtbo-base := sa8155p.dtb sa8155p-v2.dtb
 sm8150-sdx50m-cdp-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2.dtb
 sm8150-sdx50m-mtp-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2.dtb
 sm8150-sdx50m-mtp-2.5k-panel-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p-v2.dtb
@@ -250,16 +213,6 @@ dtb-$(CONFIG_ARCH_SM8150)	+= sm8150-rumi.dtb \
 	sm8150-mtp.dtb \
 	sm8150-cdp.dtb \
 	sm8150-qrd.dtb \
-	sa8155-adp-star.dtb \
-	sa8155p-adp-star.dtb \
-	sa8155-v2-adp-star.dtb \
-	sa8155p-v2-adp-star.dtb \
-	sa8155-v2-adp-air.dtb \
-	sa8155p-v2-adp-air.dtb \
-	sa8155p-v2-adp-air-capture.dtb \
-	sa8155p-v2-adp-star-capture.dtb \
-	sa8155-adp-alcor.dtb \
-	sa8155p-adp-alcor.dtb \
 	sm8150-v2-rumi.dtb \
 	sm8150-v2-mtp.dtb \
 	sm8150-v2-cdp.dtb \
