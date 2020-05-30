@@ -7,14 +7,6 @@ cepheus-sm8150-overlay.dtbo-base := sm8150.dtb sm8150-v2.dtb sm8150p.dtb sm8150p
 endif
 else
 # SPDX-License-Identifier: GPL-2.0
-dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-bullhead-rev-101.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-angler-rev-101.dtb
-dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
-
 dtb-$(CONFIG_ARCH_QCS403) += qcs403-iot-sku1.dtb \
 			qcs403-iot-sku2.dtb \
 			qcs403-iot-sku3.dtb \
@@ -117,7 +109,6 @@ dtb-$(CONFIG_ARCH_SM8150)	+= sm8150-rumi.dtb \
 	sm8150-hdk.dtb \
 	sm8150p-hdk.dtb
 endif
-
 dtb-$(CONFIG_QTI_GVM) += sa8155-vm.dtb \
 	sa8155-vm-lv.dtb \
 	sa8155-vm-lv-mt.dtb \
