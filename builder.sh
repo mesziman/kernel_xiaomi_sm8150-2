@@ -10,8 +10,8 @@ TOOLCHAIN32=/pipeline/build/root/toolchain/supergcc32
 DATE=$(date +"%d%m%Y")
 KERNEL_NAME="mesziman"
 DEVICE="-cepheus-"
-VER="-EAS"
-FINAL_ZIP="$KERNEL_NAME""$DEVICE""$DATE""$VER".zip
+VER=$(git rev-parse --short HEAD)
+FINAL_ZIP="$KERNEL_NAME""$DEVICE""$VER".zip
 corenumber=$( nproc --all )
 buildspeed=$(( $corenumber + 2 ))
 
