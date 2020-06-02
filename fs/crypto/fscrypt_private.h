@@ -162,11 +162,8 @@ struct fscrypt_info {
 	/* The actual crypto transform used for encryption and decryption */
 	struct crypto_skcipher *ci_ctfm;
 
-	/*
-	 * Cipher for ESSIV IV generation.  Only set for CBC contents
-	 * encryption, otherwise is NULL.
-	 */
-	struct crypto_cipher *ci_essiv_tfm;
+	/* True if the key should be freed when this fscrypt_info is freed */
+	bool ci_owns_key;
 
 	/*
 	 * Encryption mode used for this inode.  It corresponds to either
@@ -194,8 +191,6 @@ typedef enum {
 	FS_DECRYPT = 0,
 	FS_ENCRYPT,
 } fscrypt_direction_t;
-
-#define FS_CTX_REQUIRES_FREE_ENCRYPT_FL		0x00000001
 
 static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
 					   u32 filenames_mode)
@@ -283,14 +278,12 @@ extern bool fscrypt_fname_encrypted_size(const struct inode *inode,
 					 u32 *encrypted_len_ret);
 
 /* keyinfo.c */
-
 struct fscrypt_mode {
 	const char *friendly_name;
 	const char *cipher_str;
 	int keysize;
 	int ivsize;
-	bool logged_impl_name;
-	bool needs_essiv;
+	int logged_impl_name;
 };
 
 extern void __exit fscrypt_essiv_cleanup(void);
