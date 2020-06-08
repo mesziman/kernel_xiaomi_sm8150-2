@@ -46,7 +46,7 @@ cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
 } || {
 if [ $? != 0 ]; then
   echo "FAILED BUILD"
-  find $KERNEL_DIR -iname "*dtb"
+  exit
 fi
 }
 echo "======================VERIFY CLANG==============================="
