@@ -1,4 +1,5 @@
 Changelogs : 
  - use GCC 10.1 compiler again
  - Enable usage of ARMv8.1 LSE atomic instructions
-
+ - RWSEM backports
+ - QUEUED spinlocks backport
