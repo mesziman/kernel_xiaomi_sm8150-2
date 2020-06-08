@@ -1,3 +1,4 @@
+Changelogs : 
  - Tweaks for s2idle
  - ZRAM set to 2GB default and lz4 compression 
  - use GCC 9.3 compiler again
