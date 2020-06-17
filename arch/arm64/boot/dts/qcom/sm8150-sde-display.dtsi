@@ -628,7 +628,7 @@
 			&dsi_samsung_fhd_ea8076_f1p2_2_cmd_display
 			&dsi_samsung_fhd_ea8076_f1p2_cmd_display
 			&dsi_ss_fhd_ea8076_cmd_display
-			&dsi_ss_fhd_ea8076_global_cmd_display>;
+			&dsi_ss_fhd_ea8076_global_cmd_display>;			
 	};
 
 	sde_dsi1: qcom,dsi-display-secondary {

@@ -752,6 +752,7 @@ static int cam_lrme_mgr_hw_flush(void *hw_mgr_priv, void *hw_flush_args)
 		goto end;
 	}
 
+
 	spin_lock(&hw_device->high_req_lock);
 	list_for_each_entry_safe(frame_req, frame_req_temp,
 		&hw_device->frame_pending_list_high, frame_list) {
@@ -765,6 +766,7 @@ static int cam_lrme_mgr_hw_flush(void *hw_mgr_priv, void *hw_flush_args)
 		list_del_init(&frame_req->frame_list);
 	}
 	spin_unlock(&hw_device->normal_req_lock);
+
 
 	req_list = (struct cam_lrme_frame_request **)args->flush_req_pending;
 	for (i = 0; i < args->num_req_pending; i++) {

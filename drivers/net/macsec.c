@@ -23,6 +23,7 @@
 #include <linux/if_arp.h>
 #include <linux/phy.h>
 
+
 #include <uapi/linux/if_macsec.h>
 
 #define MACSEC_SCI_LEN 8
@@ -927,7 +928,7 @@ static enum rx_handler_result handle_not_macsec(struct sk_buff *skb)
 	rxd = macsec_data_rcu(skb->dev);
 
 	list_for_each_entry_rcu(macsec, &rxd->secys, secys) {
-		struct sk_buff *nskb;
+		struct sk_buff *nskb;	
 		struct pcpu_secy_stats *secy_stats = this_cpu_ptr(macsec->stats);
 		struct net_device *ndev = macsec->secy.netdev;
 
@@ -3064,6 +3065,8 @@ static netdev_features_t macsec_fix_features(struct net_device *dev,
 	ops = macsec_get_ops(netdev_priv(dev), NULL);
 	if (ops)
 		return REAL_DEV_FEATURES(real_dev);
+
+
 
 	features &= (real_dev->features & SW_MACSEC_FEATURES) |
 		    NETIF_F_GSO_SOFTWARE | NETIF_F_SOFT_FEATURES;

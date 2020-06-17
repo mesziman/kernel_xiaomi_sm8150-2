@@ -789,6 +789,7 @@ void sde_encoder_destroy(struct drm_encoder *drm_enc)
 	sde_rsc_client_destroy(sde_enc->rsc_client);
 
 	for (i = 0; i < sde_enc->num_phys_encs; i++) {
+
 		struct sde_encoder_phys *phys;
 
 		phys = sde_enc->phys_vid_encs[i];

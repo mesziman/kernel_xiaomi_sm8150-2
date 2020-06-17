@@ -352,8 +352,6 @@ static inline vm_flags_t calc_vm_may_flags(unsigned long prot)
 	       _calc_vm_trans(prot, PROT_WRITE, VM_MAYWRITE) |
 	       _calc_vm_trans(prot, PROT_EXEC,  VM_MAYEXEC);
 }
-
-
 	
 static int ashmem_vmfile_mmap(struct file *file, struct vm_area_struct *vma)
 {
@@ -368,8 +366,6 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
 {
 	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
 }
-
-
 
 static int ashmem_file_setup(struct ashmem_area *asma,
 			     struct vm_area_struct *vma)
@@ -410,6 +406,7 @@ static int ashmem_file_setup(struct ashmem_area *asma,
 
 static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 {
+	static struct file_operations vmfile_fops;
 	struct ashmem_area *asma = file->private_data;
 	unsigned long prot_mask;
 	size_t size;
@@ -442,6 +439,7 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 			if (!ret)
 				asma->file_is_setup = true;
 		}
+
 		mutex_unlock(&mmap_lock);
 
 		if (do_setup && ret)
