@@ -1117,6 +1117,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
 			current->mm->brk = current->mm->start_brk =
 				ELF_ET_DYN_BASE;
 
+
 		current->mm->brk = current->mm->start_brk =
 			arch_randomize_brk(current->mm);
 #ifdef compat_brk_randomized
