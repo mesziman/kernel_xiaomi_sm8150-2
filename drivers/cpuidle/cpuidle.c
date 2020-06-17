@@ -44,12 +44,12 @@ static atomic_t idled = ATOMIC_INIT(0);
 #error idled CPU mask not big enough for NR_CPUS
 #endif
 
-static void cpuidle_set_idle_cpu(unsigned int cpu)
+void cpuidle_set_idle_cpu(unsigned int cpu)
 {
 	atomic_or(BIT(cpu), &idled);
 }
 
-static void cpuidle_clear_idle_cpu(unsigned int cpu)
+void cpuidle_clear_idle_cpu(unsigned int cpu)
 {
 	atomic_andnot(BIT(cpu), &idled);
 }
