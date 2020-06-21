@@ -54,6 +54,6 @@ echo "======================VERIFY CLANG==============================="
 cd $ANYKERNEL_DIR/
 zip -r9 $FINAL_ZIP * -x *.zip $FINAL_ZIP
 cp $FINAL_ZIP ${WERCKER_REPORT_ARTIFACTS_DIR}/
-curl -s -X POST https://api.telegram.org/bot$BOT_API_KEY/sendMessage -d text="New build:\n $(cat $KERNEL_DIR/changelog.txt)" -d chat_id=@meszimankernel ;
+curl -s -X POST https://api.telegram.org/bot$BOT_API_KEY/sendMessage -d text="New build $(cat $KERNEL_DIR/changelog.txt)" -d chat_id=@meszimankernel ;
 curl -F chat_id="-1001477254593" -F document=@"$FINAL_ZIP" https://api.telegram.org/bot$BOT_API_KEY/sendDocument
 mv $FINAL_ZIP /pipeline/output/$FINAL_ZIP
