@@ -1,2 +1,9 @@
 Changelogs :
+<<<<<<< HEAD
 - TESTING rebase of latest R CAF tag 
+=======
+ - zram improvemnt
+ - add maple scheduler
+ - added new tcp cong
+ - upstreamed to 4.14.185
+>>>>>>> 1803e4d5f020... update defconfig: enable zpool, zstd z3fold
