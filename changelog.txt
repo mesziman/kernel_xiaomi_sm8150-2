@@ -2,3 +2,4 @@ Changelogs :
  - zram improvemnt
  - update defconfig for new crypto
  - switch back to 100HZ
+ - atomics improvement
