@@ -278,7 +278,7 @@ static int msm_drm_notifier_cb(struct notifier_block *nb,
 	blank = *(int *)(evdata->data);
 	mdata->display_on=true;
 
- 	if ( event == MSM_DRM_EARLY_EVENT_BLANK && (blank == MSM_DRM_BLANK_POWERDOWN ||
+ 	if ( event == MSM_DRM_EARLY_EVENT_BLANK && (blank == MSM_DRM_BLANK_POWERDOWN 
 		|| blank == MSM_DRM_BLANK_LP1 || blank == MSM_DRM_BLANK_LP2))
 		mdata->display_on = false;
 
