@@ -1,0 +1,82 @@
+From 21a328b6eb8ca6d65288751e3e6d20a4099f52ce Mon Sep 17 00:00:00 2001
+From: Gabor Meszaros <meszaros.gabor.10k@gmail.com>
+Date: Fri, 26 Jun 2020 11:26:10 +0200
+Subject: [PATCH] inline
+
+---
+ arch/arm64/configs/cepheus_defconfig        | 2 +-
+ scripts/Makefile                            | 2 +-
+ scripts/Makefile.lib                        | 3 ++-
+ techpack/data/drivers/rmnet/perf/Android.mk | 2 --
+ techpack/data/drivers/rmnet/shs/Android.mk  | 2 --
+ 5 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm64/configs/cepheus_defconfig b/arch/arm64/configs/cepheus_defconfig
+index 134551f10..bdc2cfe59 100644
+--- a/arch/arm64/configs/cepheus_defconfig
++++ b/arch/arm64/configs/cepheus_defconfig
+@@ -693,7 +693,7 @@ CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE=y
+ # CONFIG_IMG_DTB is not set
+ CONFIG_BUILD_ARM64_APPENDED_KERNEL_IMAGE_NAME="Image.gz-dtb"
+ CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES=""
+-CONFIG_BUILD_ARM64_EMBEDDED_DTB=y
++# CONFIG_BUILD_ARM64_EMBEDDED_DTB is not set
+ CONFIG_BUILD_ARM64_KERNEL_COMPRESSION_GZIP=y
+ # CONFIG_BUILD_ARM64_UNCOMPRESSED_KERNEL is not set
+ CONFIG_KRYO_PMU_WORKAROUND=y
+diff --git a/scripts/Makefile b/scripts/Makefile
+index 651c560eb..bd81c7486 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -38,7 +38,7 @@ build_unifdef: $(obj)/unifdef
+ subdir-$(CONFIG_MODVERSIONS) += genksyms
+ subdir-y                     += mod
+ subdir-$(CONFIG_SECURITY_SELINUX) += selinux
+-subdir-$(CONFIG_DTC)         += dtc-aosp
++subdir-$(CONFIG_DTC)         += dtc
+ subdir-$(CONFIG_BUILD_ARM64_EMBEDDED_DTB) += ufdt
+ subdir-$(CONFIG_GDB_SCRIPTS) += gdb
+ 
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 920820fb8..94d55bb97 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -268,7 +268,8 @@ cmd_gzip = (cat $(filter-out FORCE,$^) | gzip -n -f -9 > $@) || \
+ 
+ # DTC
+ # ---------------------------------------------------------------------------
+-DTC ?= $(objtree)/scripts/dtc-aosp/dtc-aosp
++          #DTC ?= $(objtree)/scripts/dtc-aosp/dtc-aosp
++DTC ?= $(objtree)/scripts/dtc/dtc
+ 
+ # Silence warnings
+ DTC_FLAGS += -q
+diff --git a/techpack/data/drivers/rmnet/perf/Android.mk b/techpack/data/drivers/rmnet/perf/Android.mk
+index e47fb9789..0216dfa4a 100644
+--- a/techpack/data/drivers/rmnet/perf/Android.mk
++++ b/techpack/data/drivers/rmnet/perf/Android.mk
+@@ -29,8 +29,6 @@ DLKM_DIR := ./device/qcom/common/dlkm
+ 
+ KBUILD_OPTIONS := $(RMNET_PERF_BLD_DIR)
+ 
+-$(warning $(DLKM_DIR))
+-include $(DLKM_DIR)/AndroidKernelModule.mk
+ 
+ endif #End of check for target
+ endif #End of Check for qssi target
+diff --git a/techpack/data/drivers/rmnet/shs/Android.mk b/techpack/data/drivers/rmnet/shs/Android.mk
+index b1504172f..58730c665 100644
+--- a/techpack/data/drivers/rmnet/shs/Android.mk
++++ b/techpack/data/drivers/rmnet/shs/Android.mk
+@@ -21,8 +21,6 @@ DLKM_DIR := ./device/qcom/common/dlkm
+ 
+ KBUILD_OPTIONS := $(RMNET_SHS_BLD_DIR)
+ 
+-$(warning $(DLKM_DIR))
+-include $(DLKM_DIR)/AndroidKernelModule.mk
+ 
+ endif #End of Check for target
+ endif #End of Check for qssi target
+-- 
+2.25.1
+
