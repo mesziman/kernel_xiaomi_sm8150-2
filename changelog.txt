@@ -1,6 +1,2 @@
 Changelogs :
-- merge LA.UM.8.1.r1-15400-sm8150.0
-- merge LA.UM.8.1.r1-15400-sm8150.0 qcacld-3.0
-- merge LA.UM.8.1.r1-15400-sm8150.0 techpack/data
-- relax down_rate_limit for more battery
-- some sched commits
+- pick some scheduler tuning from tytydraco
