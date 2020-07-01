@@ -44,7 +44,6 @@ struct msm_iommu_map {
 	struct scatterlist *sgl;
 	unsigned int nents;
 	enum dma_data_direction dir;
-	unsigned int nents;
 	struct msm_iommu_meta *meta;
 	struct kref ref;
 	unsigned long attrs;
