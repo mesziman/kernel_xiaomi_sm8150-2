@@ -1,4 +1,3 @@
 Changelogs :
- - sched optimizations
- - idle optimizations
  - wakeup reason fixes
+ - ion backport from 4.19
