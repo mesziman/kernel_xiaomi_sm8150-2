@@ -1,3 +1,5 @@
 Changelogs :
 - merge 4.14.187
-- sched optimization
+- huge sched optimizations
+- switch back to 100HZ
+- use Proton CLANG 11 to compile
