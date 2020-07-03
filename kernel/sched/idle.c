@@ -264,7 +264,7 @@ static void do_idle(void)
 		 * idle as we know that the IPI is going to arrive right away.
 		 */
 		if (cpu_idle_force_poll || tick_check_broadcast_expired() ||
-				is_reserved(smp_processor_id())) {
+				is_reserved(cpu)) {
 			tick_nohz_idle_restart_tick();
 			cpu_idle_poll();
 		} else {
