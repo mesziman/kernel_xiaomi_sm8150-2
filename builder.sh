@@ -5,11 +5,10 @@ git submodule update scripts
 KERNEL_DIR=$PWD
 ANYKERNEL_DIR=$KERNEL_DIR/AnyKernel3
 CCACHEDIR=../CCACHE/cepheus
-TOOLCHAINDIR=/pipeline/build/root/toolchain/supergcc
-TOOLCHAIN32=/pipeline/build/root/toolchain/supergcc32
+TOOLCHAINDIR=/pipeline/build/root/toolchain/clang
 DATE=$(date +"%d%m%Y")
 KERNEL_NAME="mesziman"
-DEVICE="-cepheus-newfod-"
+DEVICE="-cepheus-clang-"
 VER=$(git rev-parse --short HEAD)
 FINAL_ZIP="$KERNEL_NAME""$DEVICE""$VER".zip
 corenumber=$( nproc --all )
@@ -18,17 +17,20 @@ buildspeed=$(( $corenumber + 2 ))
 
 rm $ANYKERNEL_DIR/Image.gz-dtb
 rm $KERNEL_DIR/arch/arm64/boot/Image.gz $KERNEL_DIR/arch/arm64/boot/Image.gz-dtb
-export PATH="${TOOLCHAINDIR}/bin:${TOOLCHAIN32}/bin:${PATH}"
+export PATH="${TOOLCHAINDIR}/bin:${PATH}"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAINDIR}/lib"
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAIN32}/lib"
 export ARCH=arm64
 export KBUILD_BUILD_USER="mesziman"
 export KBUILD_BUILD_HOST="github"
-export CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf-
-export CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi-
-#export CROSS_COMPILE=aarch64-linux-android-
-#export CROSS_COMPILE_ARM32=arm-linux-androideabi-
-#export LD_LIBRARY_PATH=$TOOLCHAINDIR/lib/
+export CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-linux-gnu-
+export CROSS_COMPILE_ARM32=${TOOLCHAIN}/bin/arm-linux-gnueabi-
+export CC="clang"
+export AR="llvm-ar"
+export NM="llvm-nm"
+export OBJCOPY="llvm-objcopy"
+export OBJDUMP="llvm-objdump"
+export STRIP="llvm-strip"
+
 export USE_CCACHE=1
 export CCACHE_DIR=$CCACHEDIR/.ccache
 echo "===================WHICH========================="
@@ -39,7 +41,17 @@ echo "===================WHICH========================="
 
 make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
-make -s O=out -C $KERNEL_DIR  -j$buildspeed ARCH=arm64 CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf- CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi-   2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
+make -s O=out -C $KERNEL_DIR  -j$buildspeed \
+ ARCH=arm64 \
+ CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-linux-gnu- \
+ CROSS_COMPILE_ARM32=${TOOLCHAIN}/bin/arm-linux-gnueabi- \
+ CC="clang" \
+ AR="llvm-ar" \
+ NM="llvm-nm" \
+ OBJCOPY="llvm-objcopy" \
+ OBJDUMP="llvm-objdump" \
+ STRIP="llvm-strip" \
+ 2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
 } || {
