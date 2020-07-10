@@ -428,11 +428,8 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -pipe \
 		   -fno-strict-aliasing -fno-common -fshort-wchar \
 		   -Werror-implicit-function-declaration \
-		   -Wno-format-security -Wno-maybe-uninitialized -Wno-missing-attributes \
+		   -Wno-format-security  \
 		   -std=gnu89
-
-# Avoid gcc-10 regression
-KBUILD_CFLAGS	+= --param=max-inline-insns-auto=1000
 
 # Some toolchains enable those fixes automatically, so opt-out.
 KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-835769)
@@ -702,8 +699,14 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, address-of-packed-member)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, attribute-alias)
 KBUILD_CFLAGS   += $(call cc-disable-warning, address-of-packed-member)
+KBUILD_CFLAGS   += $(call cc-disable-warning, missing-attributes)
+KBUILD_CFLAGS   += $(call cc-disable-warning, maybe-uninitialized)
+
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS   += -Os
+KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
+else
+ifdef CONFIG_PROFILE_ALL_BRANCHES
+KBUILD_CFLAGS	+= -O2 $(call cc-disable-warning,maybe-uninitialized,)
 else
 KBUILD_CFLAGS   += -O2
 ifeq ($(cc-name),gcc)
@@ -711,7 +714,8 @@ KBUILD_CFLAGS	+= -mcpu=cortex-a76.cortex-a55+crc+crypto -mtune=cortex-a76.cortex
 endif
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS   += -O3
-KBUILD_CFLAGS	+= -mcpu=cortex-a55+crypto -mtune=cortex-a55+crypto
+KBUILD_CFLAGS	+= -mcpu=cortex-a55 -mtune=cortex-a55
+
 ifdef CONFIG_LLVM_POLLY
 KBUILD_CFLAGS	+= -mllvm -polly \
 		   -mllvm -polly-run-dce \
@@ -724,6 +728,8 @@ KBUILD_CFLAGS	+= -mllvm -polly \
 endif
 endif
 endif
+endif
+
 KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
 			$(call cc-disable-warning,maybe-uninitialized,))
 
@@ -1277,7 +1283,7 @@ endif
 # Make sure compiler supports LTO flags
 ifdef lto-flags
   ifeq ($(call cc-option, $(lto-flags)),)
-	@echo Cannot use CONFIG_LTO: $(lto-flags) not supported by compiler \
+	@echo Cannot $(cc-name) use CONFIG_LTO: $(lto-flags) not supported by compiler \
 		>&2 && exit 1
   endif
 endif
@@ -1285,7 +1291,7 @@ endif
 ifdef stackp-name
   ifeq ($(call cc-option, $(stackp-flag)),)
 	@echo Cannot use CONFIG_CC_STACKPROTECTOR_$(stackp-name): \
-		  $(stackp-flag) not supported by compiler >&2 && exit 1
+		  $(stackp-flag) not supported by $(cc-name) $(cc-version) >&2 && exit 1
   endif
 endif
 # Make sure compiler does not have buggy stack-protector support.
