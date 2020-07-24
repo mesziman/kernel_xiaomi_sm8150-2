@@ -51,7 +51,7 @@ AR=$TOOLCHAINDIR/llvm-ar \
 NM=$TOOLCHAINDIR/llvm-nm \
 OBJCOPY=$TOOLCHAINDIR/llvm-objcopy \
 OBJDUMP=$TOOLCHAINDIR/llvm-objdump \
-STRIP=$TOOLCHAINDIR/llvm-strip -s O=out -C $KERNEL_DIR  -j$buildspeed  2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
+STRIP=$TOOLCHAINDIR/llvm-strip  O=out -C $KERNEL_DIR  -j$buildspeed  2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
 } || {
