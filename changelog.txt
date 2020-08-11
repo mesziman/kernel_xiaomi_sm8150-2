@@ -1,3 +1,4 @@
 Changelogs :
 - upstream to 4.14.193
+- upstream to LA.UM.8.1.r1-15600-sm8150.0
 - small ION optimization
