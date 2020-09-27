@@ -1,3 +1,4 @@
 Changelogs :
-- upstream to 4.14.198
+- upstream to 4.14.199
 - enable LTO
+- Android R (11.0) release
