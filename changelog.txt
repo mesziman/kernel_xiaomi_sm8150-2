@@ -1,4 +1,4 @@
 Changelogs :
 - upstream to 4.14.200
 - Android R (11.0) release
-- some sched commits
+- disable EAS_PREFER_IDLE for better battery
