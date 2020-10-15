@@ -1,4 +1,7 @@
 Changelogs :
 - upstream to 4.14.200
 - Android R (11.0) release
+<<<<<<< HEAD
 - disable EAS_PREFER_IDLE for better battery
+=======
+>>>>>>> parent of f22249af7... Revert "sched: Implement crucial task placement strategy"
