@@ -627,12 +627,6 @@ struct wcd_mbhc {
 	bool is_hph_ocp_pending;
 	bool usbc_force_pr_mode;
 
-	bool usbc_force_pr_mode;
-	int usbc_mode;
-	struct notifier_block psy_nb;
-	struct power_supply *usb_psy;
-	struct work_struct usbc_analog_work;
-
 	struct wcd_mbhc_fn *mbhc_fn;
 	bool force_linein;
 	int usbc_mode;
