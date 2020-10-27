@@ -5,7 +5,8 @@ git submodule update scripts
 KERNEL_DIR=$PWD
 ANYKERNEL_DIR=$KERNEL_DIR/AnyKernel3
 CCACHEDIR=../CCACHE/cepheus
-TOOLCHAINDIR=/pipeline/build/root/toolchain/clang/bin
+TOOLCHAINDIR=/pipeline/build/root/toolchain/supergcc
+TOOLCHAIN32=/pipeline/build/root/toolchain/supergcc32
 DATE=$(date +"%d%m%Y")
 KERNEL_NAME="mesziman"
 DEVICE="-cepheus-R11-TESTBUILD-"
@@ -17,12 +18,13 @@ buildspeed=$(( $corenumber + 2 ))
 
 rm $ANYKERNEL_DIR/Image.gz-dtb
 rm $KERNEL_DIR/arch/arm64/boot/Image.gz $KERNEL_DIR/arch/arm64/boot/Image.gz-dtb
-export PATH="${TOOLCHAINDIR}:${PATH}"
-export LD_LIBRARY_PATH="${TOOLCHAINDIR}/lib:$LD_LIBRARY_PATH"
 export ARCH=arm64
 export KBUILD_BUILD_USER="mesziman"
 export KBUILD_BUILD_HOST="github"
 
+export PATH="${TOOLCHAINDIR}/bin:${TOOLCHAIN32}/bin:${PATH}"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAINDIR}/lib"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAIN32}/lib"
 
 echo "=========================debug============================================"
 echo " cc-namex: $(shell ${CC} -v 2>&1 )"
