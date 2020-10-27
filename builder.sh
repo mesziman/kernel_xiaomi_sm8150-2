@@ -24,7 +24,6 @@ export KBUILD_BUILD_USER="mesziman"
 export KBUILD_BUILD_HOST="github"
 
 
-ls -l ${TOOLCHAINDIR}/clang
 echo "=========================debug============================================"
 echo " cc-namex: $(shell ${CC} -v 2>&1 )"
 echo " cc-namegrep: $(shell ${CC} -v 2>&1  | grep -q "clang version" )"
@@ -36,7 +35,6 @@ echo "which tc $(which ${CROSS_COMPILE}ld))"
 echo "which cc $(which ${CC}))"
 echo "which gcc $(which ${CROSS_COMPILE}gcc)"
 echo "which gcc32 $(which ${CROSS_COMPILE32}gcc)"
-ver=$(clang -v)
 echo $ver
 echo "CC-name:"
 echo $ccname
