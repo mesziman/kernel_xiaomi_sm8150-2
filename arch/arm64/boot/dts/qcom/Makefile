@@ -43,7 +43,6 @@ dtb-$(CONFIG_ARCH_SM8150)	+= sm8150-cdp.dtb \
 	sa8155p-v2-adp-star-capture.dtb
 
 endif
-endif
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 	dtbo-$(CONFIG_ARCH_SDMSHRIKE) += \
 		sdmshrike-cdp-overlay.dtbo \
@@ -474,6 +473,18 @@ dtb-$(CONFIG_ARCH_SDXPRAIRIE) += sdxprairie-rumi.dtb \
 	sdxprairie-pcie-ep-mtp.dtb \
 	sdxprairie-dsda-mtp.dtb \
 	sdxprairie-v2-mtp.dtb \
+        sdxprairie-v2-mtp-cpe.dtb \
+        sdxprairie-v2-pcie-ep-mtp.dtb \
+        sdxprairie-v2-mtp-v1.1-cpe.dtb \
+        sdxprairie-v2-mtp-v1.1.dtb \
+        sdxprairie-v2-mtp-le-cpe.dtb \
+        sdxprairie-v2-mtp-au-dsda.dtb \
+        sa515m-v2-ttp.dtb \
+        sa515m-v2-ttp-usb-ep.dtb \
+        sa515m-v2-ttp-pcie-ep.dtb \
+        sa515m-v2-ttp-flashless-usb-ep.dtb \
+        sa515m-v2-ttp-flashless-pcie-ep.dtb \
+        sa515m-v2-ttp-emmc.dtb \
 	sa515m-ccard.dtb \
 	sa515m-ccard-pcie-ep.dtb \
 	sa515m-ccard-usb-ep.dtb \
@@ -581,7 +592,7 @@ dtb-$(CONFIG_ARCH_SDM429W) += sdm429-wtp.dtb\
 endif
 
 endif
-
+endif
 ifeq ($(CONFIG_ARM64),y)
 always		:= $(dtb-y)
 subdir-y	:= $(dts-dirs)
