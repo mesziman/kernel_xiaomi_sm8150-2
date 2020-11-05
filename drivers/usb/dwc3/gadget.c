@@ -4195,3 +4195,4 @@ void dwc3_gadget_process_pending_events(struct dwc3 *dwc)
 		enable_irq(dwc->irq_gadget);
 	}
 }
+

@@ -16,7 +16,7 @@ obj-vdso-c := $(addprefix $(obj)/, $(obj-vdso-c))
 obj-vdso   := $(obj-vdso-c) $(obj-vdso-s)
 
 ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1  --hash-style=sysv \
-		--build-id -n -T
+		--build-id $(call ld-option,-n) -T
 ccflags-y := -fno-stack-protector
 ccflags-y += -DDISABLE_BRANCH_PROFILING -ffixed-x18
 ccflags-y += $(DISABLE_LTO)
@@ -84,3 +84,4 @@ vdso.so: $(obj)/vdso.so.dbg
 	$(call cmd,vdso_install)
 
 vdso_install: vdso.so
+
