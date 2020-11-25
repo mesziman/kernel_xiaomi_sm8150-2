@@ -43,7 +43,7 @@ echo $ccname
 echo "=========================debug============================================"
 make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
-make -s O=out -C $KERNEL_DIR  -j$buildspeed ARCH=arm64 CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf- CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi- | grep "error:"
+make -s O=out -C $KERNEL_DIR -j$buildspeed ARCH=arm64 CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf- CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi- | grep "error:" | tee {WERCKER_REPORT_ARTIFACTS_DIR}/logs.txt
 
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
