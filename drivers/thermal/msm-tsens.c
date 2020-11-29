@@ -288,10 +288,10 @@ int tsens_tm_probe(struct platform_device *pdev)
 		pr_err("Error initializing TSENS controller\n");
 		return rc;
 	}
-
+#ifdef CONFIG_IPC_LOGGING
 	snprintf(tsens_name, sizeof(tsens_name), "tsens_wq_%pa",
 		&tmdev->phys_addr_tm);
-
+#endif
 	tmdev->tsens_reinit_work = alloc_workqueue(tsens_name,
 		WQ_HIGHPRI, 0);
 	if (!tmdev->tsens_reinit_work) {
