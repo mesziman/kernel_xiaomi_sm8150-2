@@ -3,3 +3,7 @@ Changelogs :
  - update defconfig for new crypto
  - switch back to 100HZ
  - atomics improvement
+ - rwsem backports
+ - futex backports
+ - merge 4.14.212
+ - compile with new SDCLANG 10.0.9
