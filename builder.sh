@@ -27,19 +27,8 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAINDIR}/lib"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAIN32}/lib"
 
 echo "=========================debug============================================"
-echo " cc-namex: $(shell ${CC} -v 2>&1 )"
-echo " cc-namegrep: $(shell ${CC} -v 2>&1  | grep -q "clang version" )"
-echo " cc-namegrepq: $(shell ${CC} -v 2>&1  | grep "clang version" )"
-echo " cc-name: $(shell ${CC} -v 2>&1  | grep -q "clang version" && echo clang || echo gcc)"
-echo "ccname noshell build : $(${CC} -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)"
-echo "which 32tc $(which ${CROSS_COMPILE_ARM32}ld))"
-echo "which tc $(which ${CROSS_COMPILE}ld))"
-echo "which cc $(which ${CC}))"
-echo "which gcc $(which ${CROSS_COMPILE}gcc)"
-echo "which gcc32 $(which ${CROSS_COMPILE32}gcc)"
-echo $ver
-echo "CC-name:"
-echo $ccname
+echo "======== CLANG FLAGS =========="
+$TOOLCHAINDIR/bin/clang -cc1 --help | grep "kryo\|a76\|a55"
 echo "=========================debug============================================"
 git revert c29f49fee539 --no-edit;
 make clean && make mrproper
