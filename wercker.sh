@@ -9,6 +9,7 @@ export LOFASZ=$PWD;
 
 git clone --depth=1 https://github.com/P-404/proprietary_vendor_qcom_sdclang /pipeline/build/root/toolchain/sdclang; 
 git clone --depth=1 https://github.com/arter97/arm32-gcc /pipeline/build/root/toolchain/supergcc32;
+git clone --depth=1 https://github.com/arter97/arm64-gcc /pipeline/build/root/toolchain/supergcc64;
 
 ln -s /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/libncurses.so.5;
 ln -s /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/libtinfo.so.5;

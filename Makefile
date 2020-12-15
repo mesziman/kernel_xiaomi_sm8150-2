@@ -424,7 +424,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -fshort-wchar \
 		   -Werror-implicit-function-declaration \
-		   -Wno-format-security -Wno-maybe-uninitialized -Wno-missing-attributes \
+		   -Wno-format-security \
 		   -std=gnu89 -pipe
 
 
@@ -437,8 +437,6 @@ ifeq ($(CONFIG_EARLY_INIT),true)
 KBUILD_CFLAGS    += -DCONFIG_EARLY_SERVICES
 endif
 
-# Avoid gcc-10 regression
-KBUILD_CFLAGS	+= --param=max-inline-insns-auto=1000
 # Some toolchains enable those fixes automatically, so opt-out.
 KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-835769)
 KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-843419)
@@ -515,7 +513,6 @@ endif
 ifneq ($(GCC_TOOLCHAIN),)
 CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
 endif
-CLANG_FLAGS	+= -Werror=unknown-warning-option
 CLANG_FLAGS	+= $(call cc-option, -Wno-misleading-indentation)
 CLANG_FLAGS	+= $(call cc-option, -Wno-bool-operation)
 CLANG_FLAGS	+= $(call cc-option, -Wno-unsequenced)
@@ -690,8 +687,6 @@ endif
 LLVM_AR		:= llvm-ar
 LLVM_NM		:= llvm-nm
 export LLVM_AR LLVM_NM
-LLVM_DIS	:= llvm-dis
-export LLVM_AR LLVM_DIS
 # Set O3 optimization level for LTO
 LDFLAGS		+= --plugin-opt=O3
 endif
@@ -718,11 +713,14 @@ else
 KBUILD_CFLAGS   += -O2
 
 ifeq ($(cc-name),gcc)
-KBUILD_CFLAGS	+= -mcpu=cortex-a76.cortex-a55+crc+crypto -mtune=cortex-a76.cortex-a55
+KBUILD_CFLAGS  += -mcpu=cortex-a76.cortex-a55+crc+crypto -mtune=cortex-a76.cortex-a55
+KBUILD_CFLAGS  += --param=max-inline-insns-auto=1000
+KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-835769)
+KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-843419)
 endif
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS   += -O3
-KBUILD_CFLAGS	+= -mcpu=cortex-a55+dotprod+crypto -mtune=cortex-a55+dotprod+crypto
+KBUILD_CFLAGS	+= -mcpu=cortex-a55+crypto+crc+dotprod -mtune=cortex-a55+crypto+crc+dotprod -mattr=+lse,+neon,+v8.2a,+crypto,+crc
 endif
 endif
 
