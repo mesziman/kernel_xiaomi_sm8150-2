@@ -38,7 +38,7 @@ make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
 make ARCH=arm64 \
 CC=clang \
-LD=lld \
+LD=ld.lld \
 CROSS_COMPILE=$TOOLCHAIN64/bin/aarch64-elf-  \
 CROSS_COMPILE_ARM32=$TOOLCHAIN32/bin/arm-eabi- \
 AR=$TOOLCHAINDIR/bin/llvm-ar \
