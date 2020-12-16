@@ -720,7 +720,7 @@ KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-843419)
 endif
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS   += -O3
-KBUILD_CFLAGS	+= -mcpu=cortex-a55+crypto+crc+dotprod -mtune=cortex-a55+crypto+crc+dotprod -mattr=+lse,+neon,+v8.2a,+crypto,+crc
+KBUILD_CFLAGS	+= -mcpu=cortex-a55+crypto+crc+dotprod -mtune=cortex-a55+crypto+crc+dotprod
 endif
 endif
 
