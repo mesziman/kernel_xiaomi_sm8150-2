@@ -2541,7 +2541,9 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel)
 		panel->bl_config.brightness_default_level = val;
 	}
 
-<<<<<<< HEAD
+	panel->bl_config.bl_inverted_dbv = utils->read_bool(utils->data,
+		"qcom,mdss-dsi-bl-inverted-dbv");
+
 	rc = utils->read_u32(utils->data,
 			"qcom,disp-doze-lpm-backlight", &val);
 	if (rc) {
@@ -2563,10 +2565,6 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel)
 	rc = dsi_panel_parse_fod_dim_lut(panel, utils);
 	if (rc)
 		pr_err("[%s failed to parse fod dim lut\n", panel->name);
-=======
-	panel->bl_config.bl_inverted_dbv = utils->read_bool(utils->data,
-		"qcom,mdss-dsi-bl-inverted-dbv");
->>>>>>> LA.UM.9.1.r1-08100-SMxxx0.0
 
 	if (panel->bl_config.type == DSI_BACKLIGHT_PWM) {
 		rc = dsi_panel_parse_bl_pwm_config(panel);
