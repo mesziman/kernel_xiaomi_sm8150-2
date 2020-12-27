@@ -118,7 +118,6 @@ modpost_link()
 		no_whole_archive_check
 		objects="--whole-archive				\
 			built-in.o					\
-			${NO_WHOLE_ARCHIVE}				\
 			--start-group					\
 			${KBUILD_VMLINUX_LIBS}				\
 			--end-group"
@@ -175,7 +174,6 @@ vmlinux_link()
 			no_whole_archive_check
 			objects="--whole-archive 			\
 				built-in.o				\
-				${NO_WHOLE_ARCHIVE}			\
 				--start-group				\
 				${KBUILD_VMLINUX_LIBS}			\
 				--end-group				\
@@ -195,7 +193,6 @@ vmlinux_link()
 			no_whole_archive_check
 			objects="-Wl,--whole-archive			\
 				built-in.o				\
-				-Wl,${NO_WHOLE_ARCHIVE}			\
 				-Wl,--start-group			\
 				${KBUILD_VMLINUX_LIBS}			\
 				-Wl,--end-group				\
