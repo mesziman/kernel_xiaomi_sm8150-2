@@ -395,13 +395,10 @@ struct fastrpc_file {
 	/* Identifies the device (MINOR_NUM_DEV / MINOR_NUM_SECURE_DEV) */
 	int dev_minor;
 	char *debug_buf;
-<<<<<<< HEAD
 	/* Flag to enable PM wake/relax voting for every remote invoke */
 	int wake_enable;
-=======
 	/* To indicate attempt has been made to allocate memory for debug_buf */
 	int debug_buf_alloced_attempted;
->>>>>>> LA.UM.9.1.r1-08100-SMxxx0.0
 };
 
 static struct fastrpc_apps gfa;
