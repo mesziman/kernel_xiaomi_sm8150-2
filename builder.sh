@@ -5,8 +5,9 @@ git submodule update scripts
 KERNEL_DIR=$PWD
 ANYKERNEL_DIR=$KERNEL_DIR/AnyKernel3
 CCACHEDIR=../CCACHE/cepheus
-TOOLCHAINDIR=/pipeline/build/root/toolchain/supergcc
+TOOLCHAINDIR=/pipeline/build/root/toolchain/sdclang
 TOOLCHAIN32=/pipeline/build/root/toolchain/supergcc32
+TOOLCHAIN64=/pipeline/build/root/toolchain/supergcc64
 DATE=$(date +"%d%m%Y")
 KERNEL_NAME="mesziman"
 DEVICE="-cepheus-R11-TESTBUILD-"
@@ -22,29 +23,29 @@ export ARCH=arm64
 export KBUILD_BUILD_USER="mesziman"
 export KBUILD_BUILD_HOST="github"
 
-export PATH="${TOOLCHAINDIR}/bin:${TOOLCHAIN32}/bin:${PATH}"
+export PATH="${TOOLCHAINDIR}/bin:${TOOLCHAIN64}/bin:${TOOLCHAIN32}/bin:${PATH}"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAINDIR}/lib"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAIN32}/lib"
 
-echo "=========================debug============================================"
-echo " cc-namex: $(shell ${CC} -v 2>&1 )"
-echo " cc-namegrep: $(shell ${CC} -v 2>&1  | grep -q "clang version" )"
-echo " cc-namegrepq: $(shell ${CC} -v 2>&1  | grep "clang version" )"
-echo " cc-name: $(shell ${CC} -v 2>&1  | grep -q "clang version" && echo clang || echo gcc)"
-echo "ccname noshell build : $(${CC} -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)"
-echo "which 32tc $(which ${CROSS_COMPILE_ARM32}ld))"
-echo "which tc $(which ${CROSS_COMPILE}ld))"
-echo "which cc $(which ${CC}))"
-echo "which gcc $(which ${CROSS_COMPILE}gcc)"
-echo "which gcc32 $(which ${CROSS_COMPILE32}gcc)"
-echo $ver
-echo "CC-name:"
-echo $ccname
-echo "=========================debug============================================"
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+git revert c29f49fee539 --no-edit;
+
+echo "====which lld===="
+which lld
+echo "====which lld===="
 make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
-make -s O=out -C $KERNEL_DIR -j$buildspeed ARCH=arm64 CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf- CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi- 2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
-
+make ARCH=arm64 \
+CC=clang \
+LD=ld.lld \
+CROSS_COMPILE=$TOOLCHAIN64/bin/aarch64-elf-  \
+CROSS_COMPILE_ARM32=$TOOLCHAIN32/bin/arm-eabi- \
+AR=$TOOLCHAINDIR/bin/llvm-ar \
+NM=$TOOLCHAINDIR/bin/llvm-nm \
+OBJCOPY=$TOOLCHAINDIR/bin/llvm-objcopy \
+OBJDUMP=$TOOLCHAINDIR/bin/llvm-objdump \
+STRIP=$TOOLCHAINDIR/bin/llvm-strip -s O=out -C $KERNEL_DIR -j$buildspeed 2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
 } || {
