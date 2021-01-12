@@ -438,7 +438,6 @@ KBUILD_CFLAGS    += -DCONFIG_EARLY_SERVICES
 endif
 
 # Avoid gcc-10 regression
-KBUILD_CFLAGS	+= --param=max-inline-insns-auto=1000
 # Some toolchains enable those fixes automatically, so opt-out.
 KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-835769)
 KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-843419)
@@ -515,13 +514,11 @@ endif
 ifneq ($(GCC_TOOLCHAIN),)
 CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
 endif
-CLANG_FLAGS	+= -no-integrated-as
-CLANG_FLAGS	+= -Werror=unknown-warning-option
 CLANG_FLAGS	+= $(call cc-option, -Wno-misleading-indentation)
 CLANG_FLAGS	+= $(call cc-option, -Wno-bool-operation)
 CLANG_FLAGS	+= $(call cc-option, -Wno-unsequenced)
 KBUILD_CFLAGS	+= $(CLANG_FLAGS)
-KBUILD_AFLAGS	+= $(CLANG_FLAGS)
+KBUILD_AFLAGS   += $(CLANG_FLAGS) -no-integrated-as
 export CLANG_FLAGS
 ifeq ($(ld-name),lld)
 KBUILD_CFLAGS += -fuse-ld=lld
@@ -718,6 +715,7 @@ else
 KBUILD_CFLAGS   += -O2
 
 ifeq ($(cc-name),gcc)
+KBUILD_CFLAGS	+= --param=max-inline-insns-auto=1000
 KBUILD_CFLAGS	+= -mcpu=cortex-a76.cortex-a55+crc+crypto -mtune=cortex-a76.cortex-a55
 endif
 ifeq ($(cc-name),clang)
