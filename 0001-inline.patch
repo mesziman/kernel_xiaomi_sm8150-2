@@ -1,0 +1,53 @@
+From c29f49fee539061627b8c6c8a27bea75c0752f78 Mon Sep 17 00:00:00 2001
+From: Gabor Meszaros <meszaros.gabor.10k@gmail.com>
+Date: Fri, 4 Dec 2020 16:30:50 +0100
+Subject: [PATCH] inline
+
+---
+ arch/arm64/configs/cepheus_defconfig | 2 +-
+ scripts/Makefile                     | 2 +-
+ scripts/Makefile.lib                 | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/configs/cepheus_defconfig b/arch/arm64/configs/cepheus_defconfig
+index 6549441275cda..c5de31420992d 100644
+--- a/arch/arm64/configs/cepheus_defconfig
++++ b/arch/arm64/configs/cepheus_defconfig
+@@ -656,7 +656,7 @@ CONFIG_IMG_GZ_DTB=y
+ # CONFIG_IMG_DTB is not set
+ CONFIG_BUILD_ARM64_APPENDED_KERNEL_IMAGE_NAME="Image.gz-dtb"
+ CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES=""
+-CONFIG_BUILD_ARM64_EMBEDDED_DTB=y
++# CONFIG_BUILD_ARM64_EMBEDDED_DTB is not set
+ CONFIG_BUILD_ARM64_KERNEL_COMPRESSION_GZIP=y
+ # CONFIG_BUILD_ARM64_UNCOMPRESSED_KERNEL is not set
+ CONFIG_KRYO_PMU_WORKAROUND=y
+diff --git a/scripts/Makefile b/scripts/Makefile
+index 8b628e3a2eb8e..1f9caad8a9c6a 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -40,7 +40,7 @@ build_unifdef: $(obj)/unifdef
+ subdir-$(CONFIG_MODVERSIONS) += genksyms
+ subdir-y                     += mod
+ subdir-$(CONFIG_SECURITY_SELINUX) += selinux
+-subdir-$(CONFIG_DTC)         += dtc-aosp
++subdir-$(CONFIG_DTC)         += dtc
+ subdir-$(CONFIG_BUILD_ARM64_EMBEDDED_DTB) += ufdt
+ subdir-$(CONFIG_GDB_SCRIPTS) += gdb
+ 
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index a5ea32e647066..d3e132a783bac 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -268,7 +268,7 @@ cmd_gzip = (cat $(filter-out FORCE,$^) | gzip -n -f -9 > $@) || \
+ 
+ # DTC
+ # ---------------------------------------------------------------------------
+-DTC ?= $(objtree)/scripts/dtc-aosp/dtc-aosp
++DTC ?= $(objtree)/scripts/dtc/dtc
+ 
+ # Silence warnings
+ DTC_FLAGS += -q
+-- 
+2.25.1
+
