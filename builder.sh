@@ -25,10 +25,7 @@ export KBUILD_BUILD_HOST="github"
 export PATH="${TOOLCHAINDIR}/bin:${TOOLCHAIN32}/bin:${PATH}"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAINDIR}/lib"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAIN32}/lib"
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
 
-git revert c29f49fee539 --no-edit;
 make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
 make -s O=out -C $KERNEL_DIR  -j$buildspeed ARCH=arm64 CROSS_COMPILE=${TOOLCHAINDIR}/bin/aarch64-elf- CROSS_COMPILE_ARM32=${TOOLCHAIN32}/bin/arm-eabi- 2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
