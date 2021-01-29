@@ -1,12 +1,3 @@
 Changelogs :
- - zram improvemnt
- - update defconfig for new crypto
- - switch back to 100HZ
- - atomics improvement
- - rwsem backports
- - futex backports
- - crypto improvements
- - enabled jumplabe
- - fully optimized cpu freqs by kdrag0n
- - merge 4.14.216
- - compile with GCC10
+ - optimize scheduler
+ - merge 4.14.217
