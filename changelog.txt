@@ -1,6 +1,6 @@
 Changelogs :
  - merge 4.14.217
- - use GCC LTO
+ - use GCC LTO!
  - disabled minimum freq limitations
  - in-kernel config for sched-rate cpuset config
  - schedtune assist added
