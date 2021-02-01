@@ -1,6 +1,6 @@
 Changelogs :
- - optimize scheduler
  - merge 4.14.217
  - use GCC LTO
- - ion, iommu improvements
  - disabled minimum freq limitations
+ - in-kernel config for sched-rate cpuset config
+ - schedtune assist added
