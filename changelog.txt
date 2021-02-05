@@ -1,2 +1,4 @@
 Changelogs :
- - use common kernel sched/energy.c
+ - update to 4.14.219
+ - tune sched more
+ - use official ARM GCC with LTO
