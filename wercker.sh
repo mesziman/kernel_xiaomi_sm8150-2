@@ -11,11 +11,11 @@ export LOFASZ=$PWD;
 # git clone --depth=1 https://github.com/mvaisakh/gcc-arm /pipeline/build/root/toolchain/supergcc32;
 
 mkdir -p /pipeline/build/root/toolchain/supergcc32;cd /pipeline/build/root/toolchain/supergcc32;
-wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi.tar.xz
+wget -nv https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi.tar.xz
 tar xf gcc-arm-10.2-2020.11-x86_64-arm-none-eabi.tar.xz --strip-components 1
 
 mkdir -p /pipeline/build/root/toolchain/supergcc;cd /pipeline/build/root/toolchain/supergcc;
-wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-elf.tar.xz
+wget -nv https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-aarch64-none-elf.tar.xz
 tar xf gcc-arm-10.2-2020.11-x86_64-aarch64-none-elf.tar.xz --strip-components 1
 
 cd $LOFASZ
