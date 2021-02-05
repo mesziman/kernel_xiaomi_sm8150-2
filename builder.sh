@@ -15,7 +15,8 @@ FINAL_ZIP="$KERNEL_NAME""$DEVICE""$VER".zip
 corenumber=$( nproc --all )
 buildspeed=$(( $corenumber + 2 ))
 
-
+sed -i "s/YYLTYPE yylloc;//g" scripts/dtc-aosp/dtc/dtc-lexer.lex.c_shipped
+sed -i "s/YYLTYPE yylloc;//g" scripts/dtc-aosp/dtc/dtc-lexer.l
 rm $ANYKERNEL_DIR/Image.gz-dtb
 rm $KERNEL_DIR/arch/arm64/boot/Image.gz $KERNEL_DIR/arch/arm64/boot/Image.gz-dtb
 export ARCH=arm64
