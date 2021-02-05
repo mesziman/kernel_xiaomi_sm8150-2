@@ -8,7 +8,7 @@ apt-get -qq install -y  xxd git  binutils-arm-linux-gnueabi g++-multilib gcc-mul
 export LOFASZ=$PWD;
 
 git clone --depth=1 https://github.com/mvaisakh/gcc-arm64 /pipeline/build/root/toolchain/supergcc;
-git clone --depth=1 https://github.com/arter97/gcc-arm /pipeline/build/root/toolchain/supergcc32;
+git clone --depth=1 https://github.com/mvaisakh/gcc-arm /pipeline/build/root/toolchain/supergcc32;
 
 cd $LOFASZ
 bash builder.sh
