@@ -1,5 +1,5 @@
 # https://devcenter.wercker.com/overview-and-core-concepts/containers/ 
-box: ubuntu
+box: ubuntu:groovy
 command-timeout: 60
 no-response-timeout: 60
 build:
