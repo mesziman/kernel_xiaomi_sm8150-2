@@ -730,7 +730,7 @@ else
 KBUILD_CFLAGS   += -O2
 
 ifeq ($(cc-name),gcc)
-KBUILD_CFLAGS  += -mcpu=cortex-a76.cortex-a55+crc+crypto -mtune=cortex-a76.cortex-a55
+KBUILD_CFLAGS  += -mcpu=cortex-a76.cortex-a55 -mtune=cortex-a76.cortex-a55
 KBUILD_CFLAGS  += --param=max-inline-insns-auto=1000
 KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-835769)
 KBUILD_CFLAGS  += $(call cc-option, -mno-fix-cortex-a53-843419)
