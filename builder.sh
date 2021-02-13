@@ -30,13 +30,13 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TOOLCHAIN32}/lib"
 make clean && make mrproper
 make O=out -C $KERNEL_DIR cepheus_defconfig
 make -s O=out -C $KERNEL_DIR  -j$buildspeed ARCH=arm64 \
-AR="aarch64-none-elf-gcc-ar" \
-NM="aarch64-none-elf-gcc-nm" \
-STRIP="aarch64-none-elf-gcc-strip" \
+AR="aarch64-linux-gnu-gcc-ar" \
+NM="aarch64-linux-gnu-gcc-nm" \
 OBJCOPY="aarch64-linux-gnu-objcopy" \
 OBJDUMP="aarch64-linux-gnu-objdump" \
-LD="aarch64-none-elf-ld" \
-CC="aarch64-none-elf-gcc ${FUNNY_FLAGS_HEH}" \
+LD="aarch64-linux-gnu-ld" \
+CC="aarch64-linux-gnu-gcc" \
+CROSS_COMPILE="aarch64-linux-gnu-" \
 CROSS_COMPILE=aarch64-none-elf- CROSS_COMPILE_ARM32=arm-none-eabi- 2>&1 | tee ${WERCKER_REPORT_ARTIFACTS_DIR}/errorlog.txt
 {
 cp $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL_DIR/
