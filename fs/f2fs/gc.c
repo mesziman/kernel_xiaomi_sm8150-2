@@ -25,7 +25,8 @@
 #include "segment.h"
 #include "gc.h"
 #include <trace/events/f2fs.h>
-
+static struct kmem_cache *victim_entry_slab;
+static unsigned int count_bits(const unsigned long *addr, unsigned int offset, unsigned int len);
 #define TRIGGER_RAPID_GC (!screen_on && power_supply_is_system_supplied())
 static bool screen_on = true;
 static LIST_HEAD(gc_sbi_list);
@@ -74,7 +75,7 @@ static int gc_thread_func(void *data)
 			rapid_gc_set_wakelock();
 			// Use 1 instead of 0 to allow thread interrupts
 			wait_ms = 1;
-			sbi->gc_mode = GC_URGENT;
+			sbi->gc_mode = GC_URGENT_HIGH;
 		} else {
 			rapid_gc_set_wakelock();
 			wait_ms = gc_th->min_sleep_time;
