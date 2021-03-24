@@ -35,7 +35,11 @@ gen_headers_out_arm64 = [
     "asm/termbits.h",
     "asm/termios.h",
     "asm/types.h",
-
+ "misc/drv8846.h",
+    "misc/akm09970.h",
+    "linux/f2fs.h",
+    "linux/akm09970.h",
+  
     // From include/uapi/**/*.h
 
     "asm-generic/auxvec.h",
