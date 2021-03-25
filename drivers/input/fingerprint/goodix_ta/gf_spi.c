@@ -44,7 +44,7 @@
 #include <linux/pm_wakeup.h>
 #include <drm/drm_bridge.h>
 #include <linux/msm_drm_notify.h>
-
+#include <linux/cpu_boost.h>
 #include "gf_spi.h"
 
 #if defined(USE_SPI_BUS)
@@ -545,7 +545,7 @@ static irqreturn_t gf_irq(int irq, void *handle)
 	pr_debug("%s enter\n", __func__);
 	__pm_wakeup_event(&fp_wakelock, WAKELOCK_HOLD_TIME);
 	sendnlmsg(temp);
-
+        do_input_boost_max();
 	if ((gf_dev->wait_finger_down == true) && (gf_dev->device_available == 1) &&
 	    (gf_dev->fb_black == 1)) {
 		key_input = KEY_RIGHT;
