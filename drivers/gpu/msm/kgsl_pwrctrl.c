@@ -28,7 +28,6 @@
 #include "kgsl_device.h"
 #include "kgsl_trace.h"
 #include "kgsl_gmu_core.h"
-#include "kgsl_trace_power.h"
 
 #define KGSL_PWRFLAGS_POWER_ON 0
 #define KGSL_PWRFLAGS_CLK_ON   1
@@ -577,8 +576,6 @@ void kgsl_pwrctrl_set_constraint(struct kgsl_device *device,
 		pwrc_old->owner_id = id;
 		pwrc_old->expires = jiffies + device->pwrctrl.interval_timeout;
 		kgsl_pwrctrl_pwrlevel_change(device, constraint);
-		/* Trace the constraint being set by the driver */
-		trace_kgsl_constraint(device, pwrc_old->type, constraint, 1);
 	} else if ((pwrc_old->type == pwrc->type) &&
 		(pwrc_old->hint.pwrlevel.level == constraint)) {
 		pwrc_old->owner_id = id;
