@@ -385,11 +385,13 @@ unsigned int kgsl_pwrctrl_adjust_pwrlevel(struct kgsl_device *device,
 				unsigned int new_level)
 {
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
-
+        unsigned int old_level = pwr->active_pwrlevel;
 	/* If a pwr constraint is expired, remove it */
 	if ((pwr->constraint.type != KGSL_CONSTRAINT_NONE) &&
 		(time_after(jiffies, pwr->constraint.expires))) {
-		/*Invalidate the constraint set */
+		/* Trace the constraint being un-set by the driver */
+                trace_kgsl_constraint(device, pwr->constraint.type,
+                                               old_level, 0);
 		pwr->constraint.expires = 0;
 		pwr->constraint.type = KGSL_CONSTRAINT_NONE;
 	}
@@ -576,6 +578,7 @@ void kgsl_pwrctrl_set_constraint(struct kgsl_device *device,
 		pwrc_old->owner_id = id;
 		pwrc_old->expires = jiffies + device->pwrctrl.interval_timeout;
 		kgsl_pwrctrl_pwrlevel_change(device, constraint);
+		trace_kgsl_constraint(device, pwrc_old->type, constraint, 1);
 	} else if ((pwrc_old->type == pwrc->type) &&
 		(pwrc_old->hint.pwrlevel.level == constraint)) {
 		pwrc_old->owner_id = id;
