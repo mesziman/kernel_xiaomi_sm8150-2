@@ -14,7 +14,6 @@
 #define ANY_ID (~0)
 
 static const struct adreno_gpu_core adreno_gpulist[] = {
-#if 0
 	{
 		.gpurev = ADRENO_REV_A640,
 		.core = 6,
