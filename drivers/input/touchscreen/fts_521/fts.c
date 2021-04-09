@@ -5129,7 +5129,7 @@ static int parse_dt(struct device *dev, struct fts_hw_platform_data *bdata)
 	if (retval < 0)
 		return retval;
 	else
-		bdata->irq_flags = temp_val;
+		bdata->irq_flags = temp_val | IRQF_PERF_AFFINE;
 	retval = of_property_read_u32(np, "fts,x-max", &temp_val);
 	if (retval < 0)
 		bdata->x_max = X_AXIS_MAX;
