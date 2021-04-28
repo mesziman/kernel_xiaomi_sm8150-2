@@ -39,7 +39,7 @@ gen_headers_out_arm64 = [
     "misc/akm09970.h",
     "linux/f2fs.h",
     "linux/akm09970.h",
-  
+    "linux/ncsi.h",  
     // From include/uapi/**/*.h
 
     "asm-generic/auxvec.h",
